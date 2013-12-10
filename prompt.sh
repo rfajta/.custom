@@ -1,119 +1,250 @@
 # sets the prompt be double lined with the format of 
-# <user>@<host> <path>                        <current_time_HH:mm:ss> <exit_code_of_last_comment_if_not_zero> (<exec_time_of_last_command_h:mm:ss>) 
+# <user>@<host> <path>                        <git_info_in_a_git_dir> <exit_code_of_last_comment_if_not_zero> <current_time_HH:mm:ss>
 
 # initializing color variables
 . ~/.custom/initcolors.sh
 
-# color for the @ sign 
-AT_COLOR="$FG_BROWN" 
+SPACE=" "
+OPEN_SQ_BRAQCKET="["
+CLOSE_SQ_BRACKET="]"
 
-# color of the <path> 
-PWD_COLOR="$FG_BROWN"
+# takes an associative array name and optionally a key name
+# returns with the value found for that key, or returns with the item with 'default' key 
+# (even in case when the key parameter is not specified),
+# or returns with the key if the value for the 'default' key was 'KEY'
+# the associative array must contain an item with 'default' key which may have a value of 'KEY'
+getValue() {
+  local key="$2"
+  if [[ -z "$key" ]]
+  then
+    key="default"
+  fi
+  local color=""
+  color="$(eval echo "\${$1[$key]}")"
+  if [[ -z "$color" ]]
+  then
+    color="$(eval echo "\${$1[default]}")"
+    if [[ "$color" == "KEY" ]]
+    then
+      color="$key"
+    fi
+  fi
+  echo -n "$color"
+}
 
-# color for <exit_code_of_last_comment_if_not_zero> 
-EXIT_CODE_COLOR="$BG_BLUE$FG_YELLOW" 
-TIME_COLOR="$FG_BROWN" 
-EXEC_TIME_COLOR="$FG_BROWN" 
+getPart() {
+  local COLOR="$1"
+  local TEXT="$2"
+  if [[ -z "$TEXT" ]]
+  then
+    echo ""
+  else
+    echo "$COLOR""$TEXT""$NO_COLOR"
+  fi
+}
 
-# specify prompt background color 
-declare -A PROMPT_BG_COLORS 
-PROMPT_BG_COLORS=(   
-  [user1]=""   
-  [user2]=$BG_RED   
+# the <user>
+COMMAND_USER="\$USER"
+declare -A COLORS_USER=(
+  [robertfa]=$FG_GREEN
+  [jenkins]=$FG_PURPLE
+  [default]=$FG_CYAN
+)
+COLOR_USER=\$\(getValue\ COLORS_USER\ \$USER\)
+
+
+# the @ sign 
+COMMAND_AT="@"
+declare -A COLORS_AT=(
+  [default]="$FG_BROWN"
+)
+COLOR_AT=\$\(getValue\ COLORS_AT\)
+
+# host
+# specify color for for each <host> plus for the 'default'
+declare -A COLORS_HOST=(
+  [localhost]=$FG_CYAN
+  [default]=$FG_LIGHT_PURPLE
+)
+# abbreviation of each <host> for the tab name of konsole, plus ['default']=KEY
+declare -A HOSTS HOSTS=(
+  [localhost]=l
+  [default]=KEY
+)
+# no surrounding single or double quotes here
+COMMAND_HOST=\"\$\(getValue\ HOSTS\ \$HOSTNAME\)\"
+COLOR_HOST=\$\(getValue\ COLORS_HOST\ \$HOSTNAME\)
+
+# <path>
+COMMAND_PWD=\"\${PWD}\"
+declare -A COLORS_PWD=(
+  [default]="$FG_BROWN"
+)
+COLOR_PWD=\$\(getValue\ COLORS_PWD\)
+
+# <time>
+COMMAND_TIME=\$\(date\ +%H:%M:%S\)
+declare -A COLORS_TIME=(
+  [default]="$FG_BROWN"
+)
+COLOR_TIME=\"\$\(getValue\ COLORS_TIME\)\"
+
+# <exit code>
+COMMAND_EXITCODE=\"\$\{SPACE\}\\$\{EXITCODE\}\$\{SPACE\}\" 
+declare -A COLORS_EXITCODE=(
+  [default]="$BG_BLUE$FG_YELLOW"
+)
+COLOR_EXITCODE=\"\$\(getValue\ COLORS_EXITCODE\)\"
+
+# <git>
+COMMAND_GIT=\$\(/usr/local/bin/vcprompt\ -f\ \'[\$FG_GREEN%a%m%u\ %b$FG_RED\%a\%m\%u\$FG_BROWN]\'\)
+declare -A COLORS_GIT=(
+  [default]="$FG_BROWN"
+)
+COLOR_GIT=\"\$\(getValue\ COLORS_GIT\)\"
+
+
+##########
+
+# color for <exit_code_of_last_comment_if_not_zero>
+EXIT_CODE_COLOR="$BG_BLUE$FG_YELLOW"
+EXEC_TIME_COLOR="$FG_BROWN"
+
+# specify prompt background color
+declare -A PROMPT_BG_COLORS
+PROMPT_BG_COLORS=(
+  [user1]=""
+  [user2]=$BG_RED
   [default]=""
 )
 
-# specify color for for each <user> plus for the 'default' 
-declare -A USER_COLORS USER_COLORS=(   
-  [user1]=$FG_LIGHT_CYAN   
-  [user2]=$FG_LIGHT_PURPLE   
-  [user3]=$FG_LIGHT_PURPLE   
-  [user4]=$FG_LIGHT_GREEN   
-  [user5]=$FG_WHITE   
-  [default]=$FG_GREEN 
-)
-
-# specify color for for each <host> plus for the 'default' 
-declare -A HOST_COLORS HOST_COLORS=(   
-  [host1]=$FG_LIGHT_CYAN
-  [default]=$FG_PURPLE 
-)
-
-# abbreviation of each <user> for the tab name of konsole, plus ['default']=KEY 
-declare -A TAB_USERSS TAB_USERSS=(   
-  [user1]=u1   
-  [user2]=u2   
-  [user3]=u3   
-  [user4]=u4   
-  [user5]=u5   
-  [default]=KEY 
-)
-
-# abbreviation of each <host> for the tab name of konsole, plus ['default']=KEY 
-  declare -A TAB_HOSTS TAB_HOSTS=(   
-  [host1]=h1   
-  [default]=KEY 
-)
-
-# takes an associative array name and a key name
-# returns with the value found for that key, or returns with the item with 'default' key,  
-# or returns with the key if the value for the 'default' key was 'KEY' 
-# the associative array must contain an item with 'default' key whcih may have a value of 'KEY' 
-getValue() {   
-  local key="$2"   
-  local color=""   
-  color="$(eval echo "\${$1[$key]}")"   
-  if [[ -z "$color" ]]  
-  then     
-    color="$(eval echo "\${$1[default]}")"     
-    if [[ "$color" == "KEY" ]]     
-    then       
-      color="$key" 
-    fi 
-  fi 
-  echo -n "$color" 
+getLengthOfVisiblePart() {
+  local text="$1"
+  text="$(echo "$text" | sed -e "s/[^:print:]\[[0-9]*\(;[0-9]*\)*m[^:print:]//g")"
+  echo ${#text}
 }
 
-# setting up the prompt 
-if [[ $TERM != dumb ]] ; 
-then   
-  DEFAULT_COLOR="$NO_COLOR$(getValue "PROMPT_BG_COLORS" "${USER}")$FG_BROWN"
-fi   
-  bgColor="$(getValue "PROMPT_BG_COLORS" "${USER}")"   
-  colorUser="$(getValue "USER_COLORS" "${USER}")""${USER}$AT_COLOR@"   
-  colorHost="$(getValue "HOST_COLORS" "${HOSTNAME}")""${HOSTNAME}"   
-  colorPwd="$PWD_COLOR \${PWD}"   
-  colorTime='$TIME_COLOR$(date +%H:%M:%S)' 
-  tabHost="$(getValue "TAB_HOSTS" "${HOSTNAME}")" 
-  tabUser="$(getValue "TAB_USERSS" "${USER}")" 
 
-trap 'export commandExecutionStart=$(date +%s)' DEBUG 
-export PS1="\` 
-  ## capturing exit code from the previous command and setting exit code string 
-  exitCode=\${?#0} 
-  exitCodeLength=\${#exitCode} 
-  if [[ \$exitCodeLength -eq 0 ]] 
-  then 
-    exitCodeLength=-2  
-    colorExitCode=\"  \" 
+getIndentation() {
+  local text="$1$2"
+  local textLength=$(getLengthOfVisiblePart "$text")
+  local length=$(( $COLUMNS - $textLength + 1 ))
+  printf "% ${length}s"
+}
+
+isGitDir() {
+  local dir="$PWD"
+
+  while [ "$dir" != "/" ]
+  do 
+    if [ `find "$dir" -maxdepth 1 -name .git` ]
+    then 
+      echo 1
+      break
+    fi
+    dir=`dirname "$dir"`
+  done
+}
+
+# If called with no arguments a new timer is returned.
+# If called with arguments the first is used as a timer
+# value and the elapsed time is returned in the form HH:MM:SS.
+#
+# Example:
+#  t=$(timer)
+#  printf 'Elapsed time: %s\n' $(timer $t)
+function timer()
+{
+    if [[ $# -eq 0 ]]; then
+        echo $(/usr/local/bin/gdate '+%s%6N')
+    else
+        local  stime=$1
+        etime=$(/usr/local/bin/gdate '+%s%6N')
+
+        if [[ -z "$stime" ]]; then stime=$etime; fi
+
+        dt=$((etime - stime))
+        dmm=$((dt % 1000000))
+        ds=$(((dt / 1000000) % 60))
+        dm=$(((dt / 60000000) % 60))
+        dh=$((dt / 3600000000))
+        printf '%d:%02d:%02d.%06d  %d' $dh $dm $ds $dmm $dt
+    fi
+}
+
+log() {
+  echo "{$@}"
+}
+
+
+export PS1="\`
+  EXITCODE=\${?#0}
+  fulltime=\$(timer)
+log 1: \$(timer \$fulltime)
+  PART1=\$(getPart "$COLOR_USER" "$COMMAND_USER")
+  PART2=\$(getPart "$COLOR_AT" "$COMMAND_AT")
+  PART3=\$(getPart "$COLOR_HOST" "$COMMAND_HOST")
+  PART4='$SPACE'
+  PART5=\$(getPart "$COLOR_PWD" "$COMMAND_PWD")
+log 2: \$(timer \$fulltime)
+  if [[ \$(isGitDir) ]]
+  then
+log 3: \$(timer \$fulltime)
+    PART7="\$SPACE\$\(/usr/local/bin/vcprompt\ -f\ \$\{FG_BROWN\}\$\{OPEN_SQ_BRAQCKET\}\$\{FG_CYAN\}%b\)"
+log 4: \$(timer \$fulltime)
+    PART7_2="\$\(/usr/local/bin/vcprompt\ -f\ %a%m%u\)"
+log 5: \$(timer \$fulltime)
+    PART7_3="\$\(\ git\ stash\ list\ \|\ wc\ -l\ \|\ cut\ -f8\ -d'\ '\ \|\ grep\ -v\ '\^\\ 0\$'\)"
+log 6: \$(timer \$fulltime)
+    if [[ \$PART7_2 ]]
+    then
+log 7: \$(timer \$fulltime)
+      PART7=\"\$PART7\${FG_RED}$SPACE\$PART7_2\"
+log 8: \$(timer \$fulltime)
+    fi
+log 9: \$(timer \$fulltime)
+    if [[ "\$PART7_3" != "0" ]]
+    then
+log 10: \$(timer \$fulltime)
+      PART7=\"\$PART7\${FG_RED}$SPACE\$PART7_3\"
+log 11: \$(timer \$fulltime)
+    fi
+log 12: \$(timer \$fulltime)
+    PART7=\"\$PART7\${FG_BROWN}\${CLOSE_SQ_BRACKET}\"
+log 13: \$(timer \$fulltime)
   else
-    colorExitCode=\" $EXIT_CODE_COLOR \$exitCode $DEFAULT_COLOR \" 
+log 14: \$(timer \$fulltime)
+    PART7=''
+log 15: \$(timer \$fulltime)
   fi
-  ## calculating time spent since the start of the last command (see trap above) 
-  commandExecutionEnd=\$(date +%s)
-  commandExecutionTimeInSeconds=\$(( \$commandExecutionEnd - \$commandExecutionStart )) 
-  commandExecutionTimeSeconds=\$((\$commandExecutionTimeInSeconds % 60)) 
-  commandExecutionTimeMinutes=\$(((\$commandExecutionTimeInSeconds / 60) % 60)) 
-  commandExecutionTimeHours=\$((\$commandExecutionTimeInSeconds / 3600)) 
-  ## changing the tab title for konsole with a special echo 
-  echo -ne \"\033]30;(\$tabUser-\$tabHost)\007\" 
-  ## print the beginning of the prompt (user, host, pwd)
-#echo -e \"$colorPwd\" 
-  echo -ne \"$NO_COLOR$bgColor$colorUser$colorHost$colorPwd\" 
-  ## print the current time with appropriate padding 
-  printf \"% \$(( \$COLUMNS - \${exitCodeLength} - \${#USER} - \${#HOSTNAME} - \${#PWD} - 15 ))s\" \"\$(date +%H:%M:%S)\" 
-  ## print the exit code string composed before 
-  echo -ne \"\$colorExitCode\" 
-  ## print the execution time string to the end 
-  printf '(%d:%02d:%02d)' \$commandExecutionTimeHours \$commandExecutionTimeMinutes \$commandExecutionTimeSeconds \`$NO_COLOR
+log 16: \$(timer \$fulltime)
+
+  if [[ \$EXITCODE ]]
+  then
+log 17: \$(timer \$fulltime)
+    PART8=\"\$SPACE\$(getPart "$COLOR_EXITCODE" "$COMMAND_EXITCODE")\$SPACE\"
+log 18: \$(timer \$fulltime)
+  else
+log 19: \$(timer \$fulltime)
+    PART8='$SPACE'
+log 20: \$(timer \$fulltime)
+  fi
+log 21: \$(timer \$fulltime)
+  PART9=\$(getPart "$COLOR_TIME" "$COMMAND_TIME")
+log 22: \$(timer \$fulltime)
+
+  T1="\$PART1\$PART2\$PART3\$PART4\$PART5"
+log 23: \$(timer \$fulltime)
+  T2="\$PART7\$PART8\$PART9"
+log 24: \$(timer \$fulltime)
+
+  echo -n "\$T1"
+log 25: \$(timer \$fulltime)
+  getIndentation \"\$T1\" \"\$T2\"
+log 26: \$(timer \$fulltime)
+  echo -n "\$T2"
+log 27: \$(timer \$fulltime)
+
+\`
 > "
+
