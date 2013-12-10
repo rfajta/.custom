@@ -186,14 +186,11 @@ export PS1="\`
   PART3=\$(getPart "$COLOR_HOST" "$COMMAND_HOST")
   PART4='$SPACE'
   PART5=\$(getPart "$COLOR_PWD" "$COMMAND_PWD")
-#log 2: \$(timer \$fulltime)
   if [[ \$(isGitDir) ]]
   then
-#log 3: \$(timer \$fulltime)
     BRANCH=\$(git branch | grep \"^* \")
     BRANCH=\"\${BRANCH:2}\"
     PART7="\$SPACE\$\{FG_BROWN\}\$\{OPEN_SQ_BRAQCKET\}\$\{FG_CYAN\}\$BRANCH"
-#log 4: \$(timer \$fulltime)
     # staged files
     git diff --quiet --cached --exit-code
     if [[ \${?#0} ]]
@@ -211,57 +208,34 @@ export PS1="\`
     then
      PART7_2=\"\$PART7_2\"\"?\"
     fi
-#log 5: \$(timer \$fulltime)
     PART7_3="\$\(\ git\ stash\ list\ \|\ wc\ -l\ \|\ cut\ -f8\ -d'\ '\ \|\ grep\ -v\ '\^\\ 0\$'\)"
-#log 6: \$(timer \$fulltime)
     if [[ \$PART7_2 ]]
     then
-#log 7: \$(timer \$fulltime)
       PART7=\"\$PART7\${FG_RED}$SPACE\$PART7_2\"
-#log 8: \$(timer \$fulltime)
     fi
-#log 9: \$(timer \$fulltime)
     if [[ "\$PART7_3" != "0" ]]
     then
-#log 10: \$(timer \$fulltime)
       PART7=\"\$PART7\${FG_RED}$SPACE\$PART7_3\"
-#log 11: \$(timer \$fulltime)
     fi
-#log 12: \$(timer \$fulltime)
     PART7=\"\$PART7\${FG_BROWN}\${CLOSE_SQ_BRACKET}\"
-#log 13: \$(timer \$fulltime)
   else
-#log 14: \$(timer \$fulltime)
     PART7=''
-#log 15: \$(timer \$fulltime)
   fi
-#log 16: \$(timer \$fulltime)
 
   if [[ \$EXITCODE ]]
   then
-#log 17: \$(timer \$fulltime)
     PART8=\"\$SPACE\$(getPart "$COLOR_EXITCODE" "$COMMAND_EXITCODE")\$SPACE\"
-#log 18: \$(timer \$fulltime)
   else
-#log 19: \$(timer \$fulltime)
     PART8='$SPACE'
-#log 20: \$(timer \$fulltime)
   fi
-#log 21: \$(timer \$fulltime)
   PART9=\$(getPart "$COLOR_TIME" "$COMMAND_TIME")
-#log 22: \$(timer \$fulltime)
 
   T1="\$PART1\$PART2\$PART3\$PART4\$PART5"
-#log 23: \$(timer \$fulltime)
   T2="\$PART7\$PART8\$PART9"
-#log 24: \$(timer \$fulltime)
 
   echo -n "\$T1"
-#log 25: \$(timer \$fulltime)
   getIndentation \"\$T1\" \"\$T2\"
-#log 26: \$(timer \$fulltime)
   echo -n "\$T2"
-#log 27: \$(timer \$fulltime)
 
 \`
 > "
