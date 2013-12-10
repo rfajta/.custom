@@ -1,7 +1,7 @@
 . ~/.custom/envvars.sh
-. ~/.custom/prezienvvars.sh
+. ~/.custom/prezi_envvars.sh
 . ~/.custom/prompt.sh
 . ~/.custom/aliases.sh
-. ~/.custom/aliases.sh
+. ~/.custom/prezi_aliases.sh
 . ~/.custom/commands.sh
 [[ -s `brew --prefix`/etc/autojump.sh ]] && . `brew --prefix`/etc/autojump.sh
