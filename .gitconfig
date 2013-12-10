@@ -1,0 +1,12 @@
+[user]
+	email = robert.fajta@prezi.com
+[color]
+	ui = true
+[alias]
+	a = add
+	co = checkout
+	c = commit
+	d = --no-pager diff
+	dn = !~/bin/gitdiff.sh
+        s = status
+	pop = stash pop
