@@ -179,71 +179,89 @@ log() {
 
 export PS1="\`
   EXITCODE=\${?#0}
-  fulltime=\$(timer)
-log 1: \$(timer \$fulltime)
+#  fulltime=\$(timer)
+#log 1: \$(timer \$fulltime)
   PART1=\$(getPart "$COLOR_USER" "$COMMAND_USER")
   PART2=\$(getPart "$COLOR_AT" "$COMMAND_AT")
   PART3=\$(getPart "$COLOR_HOST" "$COMMAND_HOST")
   PART4='$SPACE'
   PART5=\$(getPart "$COLOR_PWD" "$COMMAND_PWD")
-log 2: \$(timer \$fulltime)
+#log 2: \$(timer \$fulltime)
   if [[ \$(isGitDir) ]]
   then
-log 3: \$(timer \$fulltime)
-    PART7="\$SPACE\$\(/usr/local/bin/vcprompt\ -f\ \$\{FG_BROWN\}\$\{OPEN_SQ_BRAQCKET\}\$\{FG_CYAN\}%b\)"
-log 4: \$(timer \$fulltime)
-    PART7_2="\$\(/usr/local/bin/vcprompt\ -f\ %a%m%u\)"
-log 5: \$(timer \$fulltime)
+#log 3: \$(timer \$fulltime)
+    BRANCH=\$(git branch | grep \"^* \")
+    BRANCH=\"\${BRANCH:2}\"
+    PART7="\$SPACE\$\{FG_BROWN\}\$\{OPEN_SQ_BRAQCKET\}\$\{FG_CYAN\}\$BRANCH"
+#log 4: \$(timer \$fulltime)
+    # staged files
+    git diff --quiet --cached --exit-code
+    if [[ \${?#0} ]]
+    then
+      PART7_2=\"\$PART7_2\"\"*\"
+    fi
+    # modified files
+    git diff --quiet --exit-code
+    if [[ \${?#0} ]]
+    then
+      PART7_2=\"\$PART7_2\"\"+\"
+    fi
+    # untracked files
+    if [[ -n \$(git ls-files --other --exclude-standard) ]]
+    then
+     PART7_2=\"\$PART7_2\"\"?\"
+    fi
+#log 5: \$(timer \$fulltime)
     PART7_3="\$\(\ git\ stash\ list\ \|\ wc\ -l\ \|\ cut\ -f8\ -d'\ '\ \|\ grep\ -v\ '\^\\ 0\$'\)"
-log 6: \$(timer \$fulltime)
+#log 6: \$(timer \$fulltime)
     if [[ \$PART7_2 ]]
     then
-log 7: \$(timer \$fulltime)
+#log 7: \$(timer \$fulltime)
       PART7=\"\$PART7\${FG_RED}$SPACE\$PART7_2\"
-log 8: \$(timer \$fulltime)
+#log 8: \$(timer \$fulltime)
     fi
-log 9: \$(timer \$fulltime)
+#log 9: \$(timer \$fulltime)
     if [[ "\$PART7_3" != "0" ]]
     then
-log 10: \$(timer \$fulltime)
+#log 10: \$(timer \$fulltime)
       PART7=\"\$PART7\${FG_RED}$SPACE\$PART7_3\"
-log 11: \$(timer \$fulltime)
+#log 11: \$(timer \$fulltime)
     fi
-log 12: \$(timer \$fulltime)
+#log 12: \$(timer \$fulltime)
     PART7=\"\$PART7\${FG_BROWN}\${CLOSE_SQ_BRACKET}\"
-log 13: \$(timer \$fulltime)
+#log 13: \$(timer \$fulltime)
   else
-log 14: \$(timer \$fulltime)
+#log 14: \$(timer \$fulltime)
     PART7=''
-log 15: \$(timer \$fulltime)
+#log 15: \$(timer \$fulltime)
   fi
-log 16: \$(timer \$fulltime)
+#log 16: \$(timer \$fulltime)
 
   if [[ \$EXITCODE ]]
   then
-log 17: \$(timer \$fulltime)
+#log 17: \$(timer \$fulltime)
     PART8=\"\$SPACE\$(getPart "$COLOR_EXITCODE" "$COMMAND_EXITCODE")\$SPACE\"
-log 18: \$(timer \$fulltime)
+#log 18: \$(timer \$fulltime)
   else
-log 19: \$(timer \$fulltime)
+#log 19: \$(timer \$fulltime)
     PART8='$SPACE'
-log 20: \$(timer \$fulltime)
+#log 20: \$(timer \$fulltime)
   fi
-log 21: \$(timer \$fulltime)
+#log 21: \$(timer \$fulltime)
   PART9=\$(getPart "$COLOR_TIME" "$COMMAND_TIME")
-log 22: \$(timer \$fulltime)
+#log 22: \$(timer \$fulltime)
 
   T1="\$PART1\$PART2\$PART3\$PART4\$PART5"
-log 23: \$(timer \$fulltime)
+#log 23: \$(timer \$fulltime)
   T2="\$PART7\$PART8\$PART9"
-log 24: \$(timer \$fulltime)
+#log 24: \$(timer \$fulltime)
 
   echo -n "\$T1"
-log 25: \$(timer \$fulltime)
+#log 25: \$(timer \$fulltime)
   getIndentation \"\$T1\" \"\$T2\"
-log 26: \$(timer \$fulltime)
+#log 26: \$(timer \$fulltime)
   echo -n "\$T2"
-log 27: \$(timer \$fulltime)
+#log 27: \$(timer \$fulltime)
 
 \`
 > "
