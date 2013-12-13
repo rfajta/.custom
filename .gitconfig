@@ -10,3 +10,5 @@
 	dn = !~/bin/gitdiff.sh
         s = status
 	pop = stash pop
+	nstash = stash save
+
