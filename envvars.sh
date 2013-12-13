@@ -9,4 +9,4 @@ export GREP_OPTIONS='--color=auto'
 export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
 
 # PATH
-export PATH="$PATH:."
+export PATH="$PATH:.:~/bin"
