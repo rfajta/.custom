@@ -21,10 +21,10 @@ printPrompt() {
     then
       key="default"
     fi
-    local color="$(eval echo "\${$arrayName[${key}]}")"
-    if [[ -z "$color" ]]
+    local color="$(eval echo "\${${arrayName}[${key}]}")"
+    if [[ -z "${color}" ]]
     then
-      color="$(eval echo "\${$arrayName[default]}")"
+      color="$(eval echo "\${${arrayName}[default]}")"
       if [[ "${color}" == "KEY" ]]
       then
         color="${key}"
@@ -81,58 +81,58 @@ printPrompt() {
     [default]=KEY
   )
   # no surrounding single or double quotes here
-  COMMAND_HOST='$(getValue HOST_ABBREVIATION $HOSTNAME)'
-  COLOR_HOST='$(getValue COLORS_HOST $HOSTNAME)'
+  COMMAND_HOST='$(getValue HOST_ABBREVIATION ${HOSTNAME})'
+  COLOR_HOST='$(getValue COLORS_HOST ${HOSTNAME})'
 
   # <path>
   COMMAND_PWD='${PWD}'
-  COLOR_PWD='$FG_BROWN'
+  COLOR_PWD='${FG_BROWN}'
 
   # <time>
   COMMAND_TIME='$(date +%H:%M:%S)'
-  COLOR_TIME='$FG_BROWN'
+  COLOR_TIME='${FG_BROWN}'
 
   # <exit code>
   COMMAND_EXITCODE='\ ${EXITCODE}\ '
-  COLOR_EXITCODE='$BG_BLUE$FG_YELLOW'
+  COLOR_EXITCODE='${BG_BLUE}${FG_YELLOW}'
 
   # <git>
-  COMMAND_GIT=\$\(/usr/local/bin/vcprompt\ -f\ \'[\$FG_GREEN%a%m%u\ %b$FG_RED\%a\%m\%u\$FG_BROWN]\'\)
+  COMMAND_GIT=\$\(/usr/local/bin/vcprompt\ -f\ \'[\${FG_GREEN}%a%m%u\ %b${FG_RED}\%a\%m\%u\${FG_BROWN}]\'\)
   declare -A COLORS_GIT=(
-    [default]="$FG_BROWN"
+    [default]="${FG_BROWN}"
   )
   COLOR_GIT=\"\$\(getValue\ COLORS_GIT\)\"
-  COLOR_GIT_BRACKETS="$FG_BROWN"
-  COLOR_GIT_BRANCH="$FG_CYAN"
-  COLOR_GIT_CHANGES="$FG_RED"
-  COLOR_GIT_STASH="$FG_RED"
+  COLOR_GIT_BRACKETS="${FG_BROWN}"
+  COLOR_GIT_BRANCH="${FG_CYAN}"
+  COLOR_GIT_CHANGES="${FG_RED}"
+  COLOR_GIT_STASH="${FG_RED}"
 
   getLengthOfVisiblePart() {
     local text="$1"
     # filtering out color control characters
-    text="$(echo "$text" | sed -e "s/[^:print:]\[[0-9]*\(;[0-9]*\)*m[^:print:]//g")"
+    text="$(echo "${text}" | sed -e "s/[^:print:]\[[0-9]*\(;[0-9]*\)*m[^:print:]//g")"
     echo -n ${#text}
   }
 
 
   composeIndentation() {
     local text="$1$2"
-    local textLength=$(getLengthOfVisiblePart "$text")
-    local length=$(( $COLUMNS - $textLength ))
+    local textLength=$(getLengthOfVisiblePart "${text}")
+    local length=$(( ${COLUMNS} - ${textLength} ))
     printf "% ${length}s"
   }
 
   getGitDir() {
-    local dir="$PWD"
+    local dir="${PWD}"
 
-    while [ "$dir" != "/" ]
+    while [ "${dir}" != "/" ]
     do
-      if [ -d "$dir/.git" ]
+      if [ -d "${dir}/.git" ]
       then
-        echo "$dir"
+        echo "${dir}"
         break
       fi
-      dir=`dirname "$dir"`
+      dir=`dirname "${dir}"`
     done
   }
 
@@ -142,7 +142,7 @@ printPrompt() {
   #
   # Example:
   #  t=$(timer)
-  #  printf 'Elapsed time: %s\n' $(timer $t)
+  #  printf 'Elapsed time: %s\n' $(timer ${t})
   function timer() {
       if [[ $# -eq 0 ]]; then
           echo $(/usr/local/bin/gdate '+%s%6N')
@@ -150,14 +150,14 @@ printPrompt() {
           local  stime=$1
           etime=$(/usr/local/bin/gdate '+%s%6N')
 
-          if [[ -z "$stime" ]]; then stime=$etime; fi
+          if [[ -z "${stime}" ]]; then stime=${etime}; fi
 
           dt=$((etime - stime))
           dmm=$((dt % 1000000))
           ds=$(((dt / 1000000) % 60))
           dm=$(((dt / 60000000) % 60))
           dh=$((dt / 3600000000))
-          printf '%d:%02d:%02d.%06d  %d' $dh $dm $ds $dmm $dt
+          printf '%d:%02d:%02d.%06d  %d' ${dh} ${dm} ${ds} ${dmm} ${dt}
       fi
   }
 
@@ -167,11 +167,11 @@ printPrompt() {
 
   composeGitPart() {
     local gitDir="$(getGitDir)"
-    if [[ -n "$gitDir" ]]
+    if [[ -n "${gitDir}" ]]
     then
       local branch=$(git branch | grep "^* ")
       branch="${branch:2}"
-      echo -n " ${COLOR_GIT_BRACKETS}${COLOR_PROMPT_BG}${OPEN_SQ_BRAQCKET}${COLOR_GIT_BRANCH}${COLOR_PROMPT_BG}$branch"
+      echo -n " ${COLOR_GIT_BRACKETS}${COLOR_PROMPT_BG}${OPEN_SQ_BRAQCKET}${COLOR_GIT_BRANCH}${COLOR_PROMPT_BG}${branch}"
       # staged files
       git diff --quiet --cached --exit-code
       if [[ ${?#0} ]]
@@ -185,24 +185,24 @@ printPrompt() {
         changeIndicator="${changeIndicator}*"
       fi
       # untracked files
-      if [[ -n $(git ls-files "$gitDir" --other --exclude-standard) ]]
+      if [[ -n $(git ls-files "${gitDir}" --other --exclude-standard) ]]
       then
        changeIndicator="${changeIndicator}?"
       fi
      # unpushed commits
-      if [[ -n $(git log $branch --not --remotes --oneline) ]]
+      if [[ -n $(git log ${branch} --not --remotes --oneline) ]]
       then
        changeIndicator="${changeIndicator}!"
       fi
       # stashed stack depth
       local stashStackDepth="$(git stash list | wc -l | cut -f8 -d' ' | grep -v '^ 0$')"
-      if [[ $changeIndicator ]]
+      if [[ ${changeIndicator} ]]
       then
-        getPart "${COLOR_GIT_CHANGES}${COLOR_PROMPT_BG}" " $changeIndicator"
+        getPart "${COLOR_GIT_CHANGES}${COLOR_PROMPT_BG}" " ${changeIndicator}"
       fi
-      if [[ "$stashStackDepth" != "0" ]]
+      if [[ "${stashStackDepth}" != "0" ]]
       then
-        getPart "${COLOR_GIT_STASH}${COLOR_PROMPT_BG}" " $stashStackDepth"
+        getPart "${COLOR_GIT_STASH}${COLOR_PROMPT_BG}" " ${stashStackDepth}"
       fi
       echo -n "${COLOR_GIT_BRACKETS}${COLOR_PROMPT_BG}${CLOSE_SQ_BRACKET}"
     else
@@ -211,11 +211,11 @@ printPrompt() {
   }
 
   composeBeginning() {
-    eval "getPart "$COLOR_USER${COLOR_PROMPT_BG}" "$COMMAND_USER""
-    eval "getPart "$COLOR_AT${COLOR_PROMPT_BG}" "$COMMAND_AT""
-    eval "getPart "$COLOR_HOST${COLOR_PROMPT_BG}" "$COMMAND_HOST""
+    eval "getPart "${COLOR_USER}${COLOR_PROMPT_BG}" "${COMMAND_USER}""
+    eval "getPart "${COLOR_AT}${COLOR_PROMPT_BG}" "${COMMAND_AT}""
+    eval "getPart "${COLOR_HOST}${COLOR_PROMPT_BG}" "${COMMAND_HOST}""
     echo -n " "
-    eval "getPart "$COLOR_PWD${COLOR_PROMPT_BG}" "$COMMAND_PWD""
+    eval "getPart "${COLOR_PWD}${COLOR_PROMPT_BG}" "${COMMAND_PWD}""
   }
 
   composeEnd() {
@@ -223,12 +223,12 @@ printPrompt() {
     if [[ ${EXITCODE} ]]
     then
       echo -n " "
-      eval "getPart "$COLOR_EXITCODE" "$COMMAND_EXITCODE""
+      eval "getPart "${COLOR_EXITCODE}" "${COMMAND_EXITCODE}""
       echo -n "${NO_COLOR}${COLOR_PROMPT_BG} "
     else
       echo -n " "
     fi
-    eval "getPart "${COLOR_TIME}${COLOR_PROMPT_BG}" "$COMMAND_TIME""
+    eval "getPart "${COLOR_TIME}${COLOR_PROMPT_BG}" "${COMMAND_TIME}""
   }
 
   ###########################################
@@ -236,15 +236,15 @@ printPrompt() {
   ###########################################
 
   # startTime=$(timer)
-  echo -n "$COLOR_PROMPT_BG"
+  echo -n "${COLOR_PROMPT_BG}"
   local beginnig="$(composeBeginning)"
   local end="$(composeEnd)"
 
-  echo -n "$beginnig"
-  composeIndentation "$beginnig" "$end"
+  echo -n "${beginnig}"
+  composeIndentation "${beginnig}" "${end}"
   echo "${end}${NO_COLOR}"
   echo "> "
-  # log 1: $(timer $startTime)
+  # log 1: $(timer ${startTime})
 }
 
 export PS1="\`printPrompt\`"
