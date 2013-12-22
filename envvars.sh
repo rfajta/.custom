@@ -10,3 +10,9 @@ export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
 
 # PATH
 export PATH="$PATH:.:~/bin"
+
+# init colors
+~/.custom/initcolors.sh
+
+# using clever pager most, which supports olors for e.g. manpages
+export MANPAGER="most"
