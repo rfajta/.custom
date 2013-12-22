@@ -37,9 +37,9 @@ getPart() {
   local TEXT="$2"
   if [[ -z "$TEXT" ]]
   then
-    echo ""
+    echo -n ""
   else
-    echo "$COLOR""$TEXT""$NO_COLOR"
+    echo -n "$COLOR""$TEXT""$NO_COLOR"
   fi
 }
 
@@ -90,7 +90,7 @@ declare -A COLORS_TIME=(
 COLOR_TIME=\"\$\(getValue\ COLORS_TIME\)\"
 
 # <exit code>
-COMMAND_EXITCODE=\"\$\{SPACE\}\\$\{EXITCODE\}\$\{SPACE\}\" 
+COMMAND_EXITCODE=\"\${SPACE}\${EXITCODE}\${SPACE}\" 
 declare -A COLORS_EXITCODE=(
   [default]="$BG_BLUE$FG_YELLOW"
 )
@@ -121,14 +121,14 @@ PROMPT_BG_COLORS=(
 getLengthOfVisiblePart() {
   local text="$1"
   text="$(echo "$text" | sed -e "s/[^:print:]\[[0-9]*\(;[0-9]*\)*m[^:print:]//g")"
-  echo ${#text}
+  echo -n ${#text}
 }
 
 
 getIndentation() {
   local text="$1$2"
   local textLength=$(getLengthOfVisiblePart "$text")
-  local length=$(( $COLUMNS - $textLength + 1 ))
+  local length=$(( $COLUMNS - $textLength ))
   printf "% ${length}s"
 }
 
@@ -172,21 +172,21 @@ function timer() {
 }
 
 log() {
-  echo "{$@}"
+  echo "{$@}" >&2
 }
 
 composeGitPart() {
   local gitDir="$(getGitDir)"
   if [[ -n "$gitDir" ]]
   then
-    BRANCH=$(git branch | grep "^* ")
+    local BRANCH=$(git branch | grep "^* ")
     BRANCH="${BRANCH:2}"
-    PART7="$SPACE${FG_BROWN}${OPEN_SQ_BRAQCKET}${FG_CYAN}$BRANCH"
+    local PART7="$SPACE${FG_BROWN}${OPEN_SQ_BRAQCKET}${FG_CYAN}$BRANCH"
     # staged files
     git diff --quiet --cached --exit-code
     if [[ ${?#0} ]]
     then
-      PART7_2="$PART7_2""+"
+      local PART7_2="$PART7_2""+"
     fi
     # modified files
     git diff --quiet --exit-code
@@ -205,7 +205,7 @@ composeGitPart() {
      PART7_2="$PART7_2""!"
     fi
     # stashed stack depth
-    PART7_3="$(git stash list | wc -l | cut -f8 -d' ' | grep -v '^ 0$')"
+    local PART7_3="$(git stash list | wc -l | cut -f8 -d' ' | grep -v '^ 0$')"
     if [[ $PART7_2 ]]
     then
       PART7="$PART7${FG_RED}$SPACE$PART7_2"
@@ -216,38 +216,46 @@ composeGitPart() {
     fi
     PART7="$PART7${FG_BROWN}${CLOSE_SQ_BRACKET}"
   else
-    PART7=''
+    PART7=""
   fi
   echo -n "$PART7"
 }
 
+composeBeginning() {
+  eval "getPart "$COLOR_USER" "$COMMAND_USER""
+  eval "getPart "$COLOR_AT" "$COMMAND_AT""
+  eval "getPart "$COLOR_HOST" "$COMMAND_HOST""
+  echo -n "$SPACE"
+  eval "getPart "$COLOR_PWD" "$COMMAND_PWD""
+}
+
+composeEnd() {
+  composeGitPart
+  if [[ $EXITCODE ]]
+  then
+    echo -n "$SPACE"
+    eval "getPart "$COLOR_EXITCODE" "$COMMAND_EXITCODE""
+    echo -n "$SPACE"
+  else
+    echo -n "$SPACE"
+  fi
+  eval "getPart "$COLOR_TIME" "$COMMAND_TIME""
+}
+
+composePrompt() {
+  local beginnig="$(composeBeginning)"
+  local end="$(composeEnd)"
+
+  echo -n "$beginnig"
+  getIndentation "$beginnig" "$end"
+  echo -n "$end"
+}
 
 export PS1="\`
   EXITCODE=\${?#0}
-  # fulltime=\$(timer)
-  PART1=\$(getPart "$COLOR_USER" "$COMMAND_USER")
-  PART2=\$(getPart "$COLOR_AT" "$COMMAND_AT")
-  PART3=\$(getPart "$COLOR_HOST" "$COMMAND_HOST")
-  PART4='$SPACE'
-  PART5=\$(getPart "$COLOR_PWD" "$COMMAND_PWD")
-
-  PART7=\"\$(composeGitPart)\"
-  if [[ \$EXITCODE ]]
-  then
-    PART8=\"\$SPACE\$(getPart "$COLOR_EXITCODE" "$COMMAND_EXITCODE")\$SPACE\"
-  else
-    PART8='$SPACE'
-  fi
-  PART9=\$(getPart "$COLOR_TIME" "$COMMAND_TIME")
-
-  T1="\$PART1\$PART2\$PART3\$PART4\$PART5"
-  T2="\$PART7\$PART8\$PART9"
-
-  echo -n "\$T1"
-  getIndentation \"\$T1\" \"\$T2\"
-  echo -n "\$T2"
-
-# log 1: \$(timer \$fulltime)
+  # startTime=\$(timer)
+  composePrompt
+  # log 1: \$(timer \$startTime)
 \`
 > "
 
