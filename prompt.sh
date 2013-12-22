@@ -132,14 +132,14 @@ getIndentation() {
   printf "% ${length}s"
 }
 
-isGitDir() {
+getGitDir() {
   local dir="$PWD"
 
   while [ "$dir" != "/" ]
   do 
-    if [ `find "$dir" -maxdepth 1 -name .git` ]
+    if [ -d "$dir/.git" ]
     then 
-      echo 1
+      echo "$dir"
       break
     fi
     dir=`dirname "$dir"`
@@ -153,8 +153,7 @@ isGitDir() {
 # Example:
 #  t=$(timer)
 #  printf 'Elapsed time: %s\n' $(timer $t)
-function timer()
-{
+function timer() {
     if [[ $# -eq 0 ]]; then
         echo $(/usr/local/bin/gdate '+%s%6N')
     else
@@ -176,52 +175,63 @@ log() {
   echo "{$@}"
 }
 
+composeGitPart() {
+  local gitDir="$(getGitDir)"
+  if [[ -n "$gitDir" ]]
+  then
+    BRANCH=$(git branch | grep "^* ")
+    BRANCH="${BRANCH:2}"
+    PART7="$SPACE${FG_BROWN}${OPEN_SQ_BRAQCKET}${FG_CYAN}$BRANCH"
+    # staged files
+    git diff --quiet --cached --exit-code
+    if [[ ${?#0} ]]
+    then
+      PART7_2="$PART7_2""+"
+    fi
+    # modified files
+    git diff --quiet --exit-code
+    if [[ ${?#0} ]]
+    then
+      PART7_2="$PART7_2""*"
+    fi
+    # untracked files
+    if [[ -n $(git ls-files "$gitDir" --other --exclude-standard) ]]
+    then
+     PART7_2="$PART7_2""?"
+    fi
+   # unpushed commits
+    if [[ -n $(git log $BRANCH --not --remotes --oneline) ]]
+    then
+     PART7_2="$PART7_2""!"
+    fi
+    # stashed stack depth
+    PART7_3="$(git stash list | wc -l | cut -f8 -d' ' | grep -v '^ 0$')"
+    if [[ $PART7_2 ]]
+    then
+      PART7="$PART7${FG_RED}$SPACE$PART7_2"
+    fi
+    if [[ "$PART7_3" != "0" ]]
+    then
+      PART7="$PART7${FG_RED}$SPACE$PART7_3"
+    fi
+    PART7="$PART7${FG_BROWN}${CLOSE_SQ_BRACKET}"
+  else
+    PART7=''
+  fi
+  echo -n "$PART7"
+}
+
 
 export PS1="\`
   EXITCODE=\${?#0}
-#  fulltime=\$(timer)
-#log 1: \$(timer \$fulltime)
+  # fulltime=\$(timer)
   PART1=\$(getPart "$COLOR_USER" "$COMMAND_USER")
   PART2=\$(getPart "$COLOR_AT" "$COMMAND_AT")
   PART3=\$(getPart "$COLOR_HOST" "$COMMAND_HOST")
   PART4='$SPACE'
   PART5=\$(getPart "$COLOR_PWD" "$COMMAND_PWD")
-  if [[ \$(isGitDir) ]]
-  then
-    BRANCH=\$(git branch | grep \"^* \")
-    BRANCH=\"\${BRANCH:2}\"
-    PART7="\$SPACE\$\{FG_BROWN\}\$\{OPEN_SQ_BRAQCKET\}\$\{FG_CYAN\}\$BRANCH"
-    # staged files
-    git diff --quiet --cached --exit-code
-    if [[ \${?#0} ]]
-    then
-      PART7_2=\"\$PART7_2\"\"*\"
-    fi
-    # modified files
-    git diff --quiet --exit-code
-    if [[ \${?#0} ]]
-    then
-      PART7_2=\"\$PART7_2\"\"+\"
-    fi
-    # untracked files
-    if [[ -n \$(git ls-files --other --exclude-standard) ]]
-    then
-     PART7_2=\"\$PART7_2\"\"?\"
-    fi
-    PART7_3="\$\(\ git\ stash\ list\ \|\ wc\ -l\ \|\ cut\ -f8\ -d'\ '\ \|\ grep\ -v\ '\^\\ 0\$'\)"
-    if [[ \$PART7_2 ]]
-    then
-      PART7=\"\$PART7\${FG_RED}$SPACE\$PART7_2\"
-    fi
-    if [[ "\$PART7_3" != "0" ]]
-    then
-      PART7=\"\$PART7\${FG_RED}$SPACE\$PART7_3\"
-    fi
-    PART7=\"\$PART7\${FG_BROWN}\${CLOSE_SQ_BRACKET}\"
-  else
-    PART7=''
-  fi
 
+  PART7=\"\$(composeGitPart)\"
   if [[ \$EXITCODE ]]
   then
     PART8=\"\$SPACE\$(getPart "$COLOR_EXITCODE" "$COMMAND_EXITCODE")\$SPACE\"
@@ -237,6 +247,7 @@ export PS1="\`
   getIndentation \"\$T1\" \"\$T2\"
   echo -n "\$T2"
 
+# log 1: \$(timer \$fulltime)
 \`
 > "
 
