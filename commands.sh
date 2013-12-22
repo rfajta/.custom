@@ -5,7 +5,7 @@ mdcd() {
 
 # clever cd
 #
-# with multiple params it replaces 'param1' in the current dir name to 'param2' abd enters into that dir
+# with multiple params it replaces 'param1' in the current dir name to 'param2' and enters into that dir
 #
 # with one param, if that contains several dots, then it resolves each ..[.]* to ..[/..]* and enters into that
 # e.g. '...' means '../..', while '.....' means '../../../..'
@@ -71,4 +71,9 @@ mc() {
   dir1="$(/usr/local/bin/greadlink -m "$dir1")"
   dir2="$(/usr/local/bin/greadlink -m "$dir2")"
   /Applications/muCommander.app/Contents/MacOS/JavaApplicationStub "$dir1" "$dir2" 1>/dev/null 2>/dev/null &
+}
+
+# recursive grep
+gr() {
+  grep -w -r -I "$1" *
 }
