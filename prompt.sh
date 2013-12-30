@@ -169,9 +169,14 @@ printPrompt() {
     local gitDir="$(getGitDir)"
     if [[ -n "${gitDir}" ]]
     then
-      local branch=$(git branch | grep "^* ")
+      local branch="$(git branch | grep "^* ")"
       branch="${branch:2}"
       echo -n " ${COLOR_GIT_BRACKETS}${COLOR_PROMPT_BG}${OPEN_SQ_BRAQCKET}${COLOR_GIT_BRANCH}${COLOR_PROMPT_BG}${branch}"
+      if [[ "$branch" == "(no branch)" ]]
+      then
+        branch=""
+      fi
+
       # staged files
       git diff --quiet --cached --exit-code
       if [[ ${?#0} ]]
@@ -189,7 +194,7 @@ printPrompt() {
       then
        changeIndicator="${changeIndicator}?"
       fi
-     # unpushed commits
+      # unpushed commits
       if [[ -n $(git log ${branch} --not --remotes --oneline) ]]
       then
        changeIndicator="${changeIndicator}!"
@@ -248,4 +253,3 @@ printPrompt() {
 }
 
 export PS1="\`printPrompt\`"
-

@@ -7,8 +7,13 @@
 	co = checkout
 	c = commit
 	d = --no-pager diff
-	dn = !~/bin/gitdiff.sh
-        s = status
+	s = !~/bin/gitstatus.sh
+	am = !~/bin/gitadd.sh -m
+	au = !~/bin/gitadd.sh -u
+	ds = !~/bin/gitdiff.sh -s
+	dm = !~/bin/gitdiff.sh -m
+	du = !~/bin/gitdiff.sh -u
+	da = !~/bin/gitdiff.sh -a
 	pop = stash pop
 	nstash = stash save
 
