@@ -171,11 +171,12 @@ printPrompt() {
     then
       local branch="$(git branch | grep "^* ")"
       branch="${branch:2}"
-      echo -n " ${COLOR_GIT_BRACKETS}${COLOR_PROMPT_BG}${OPEN_SQ_BRAQCKET}${COLOR_GIT_BRANCH}${COLOR_PROMPT_BG}${branch}"
       if [[ "$branch" == "(no branch)" ]]
       then
-        branch=""
+        branch=$(git log -1 --oneline --abbrev=5)
+        branch="<${branch:0:5}>"
       fi
+      echo -n " ${COLOR_GIT_BRACKETS}${COLOR_PROMPT_BG}${OPEN_SQ_BRAQCKET}${COLOR_GIT_BRANCH}${COLOR_PROMPT_BG}${branch}"
 
       # staged files
       git diff --quiet --cached --exit-code
