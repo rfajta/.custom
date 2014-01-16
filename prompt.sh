@@ -1,6 +1,12 @@
 # sets the prompt be double lined with the format of
 # <user>@<host> <path>                        <git_info_in_a_git_dir> <exit_code_of_last_comment_if_not_zero> <current_time_HH:mm:ss>
 
+# Requires bash 4.x+
+# Setup requirements on Mac
+#   brew install bash
+#   sudo mv /bin/bash /bin/bash.bak
+#   sudo ln -s /usr/local/Cellar/bash/4.2.45/bin/bash /bin/bash
+
 # initializing color variables
 . ~/.custom/initcolors.sh
 
