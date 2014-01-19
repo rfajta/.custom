@@ -91,7 +91,7 @@ printPrompt() {
   COLOR_HOST='$(getValue COLORS_HOST ${HOSTNAME})'
 
   # <path>
-  COMMAND_PWD='${PWD}'
+  COMMAND_PWD="'${PWD}'"
   COLOR_PWD='${FG_BROWN}'
 
   # <time>
