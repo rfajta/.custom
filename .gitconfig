@@ -8,6 +8,7 @@
 	c = commit
 	d = --no-pager diff
 	s = !~/bin/gitstatus.sh
+	com = !~/bin/gitcheckout.sh -m
 	am = !~/bin/gitadd.sh -m
 	au = !~/bin/gitadd.sh -u
 	ds = !~/bin/gitdiff.sh -s
@@ -17,3 +18,5 @@
 	pop = stash pop
 	nstash = stash save
 
+[core]
+	editor = emacs
