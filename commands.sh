@@ -33,7 +33,13 @@ cd() {
     builtin cd "$dir"
   else
     # one regular param or no params
-    builtin cd "$@"
+    if [[ -f "$1" ]]
+    then
+      # trying to cd into a file? cd it directory instead
+      builtin cd "$(dirname "$1")"
+    else
+      builtin cd "$@"
+    fi
   fi
 }
 
