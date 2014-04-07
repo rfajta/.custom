@@ -78,8 +78,3 @@ mc() {
   dir2="$(/usr/local/bin/greadlink -m "$dir2")"
   /Applications/muCommander.app/Contents/MacOS/JavaApplicationStub "$dir1" "$dir2" 1>/dev/null 2>/dev/null &
 }
-
-# recursive grep
-gr() {
-  grep -w -r -I "$1" *
-}
