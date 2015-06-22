@@ -15,8 +15,13 @@
 	dm = !~/bin/gitdiff.sh -m
 	du = !~/bin/gitdiff.sh -u
 	da = !~/bin/gitdiff.sh -a
+	dws = !~/bin/gitdiff-w.sh -s
+	dwm = !~/bin/gitdiff-w.sh -m
+	dwu = !~/bin/gitdiff-w.sh -u
+	dwa = !~/bin/gitdiff-w.sh -a
 	pop = stash pop
 	nstash = stash save
 
 [core]
 	editor = emacs
+	excludesfile = /Users/robertfa/.gitignore

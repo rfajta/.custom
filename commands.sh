@@ -78,3 +78,30 @@ mc() {
   dir2="$(/usr/local/bin/greadlink -m "$dir2")"
   /Applications/muCommander.app/Contents/MacOS/JavaApplicationStub "$dir1" "$dir2" 1>/dev/null 2>/dev/null &
 }
+
+# with single arg
+#   grep -rI "$@" *
+#
+# with multiple arg
+#   find . -name "$fileNamePattern" | xargs grep -I "$@"
+# where fileNamePattern is considered a ready pattern if hasa dot,
+# or considered a file extension only if there is no dot
+r() {
+  if [[ "$2" != "" ]]
+  then
+    fileNamePattern="$1"
+    # the below *.* must not be quoted to check if the pattern contains a .
+    if [[ "$1" == *.* ]]
+    then
+      # . in the filename, so assume it is a ready pattern already, and not only an extension
+      fileNamePattern="$1"
+    else
+      # if no . in the pattern then assume it is a file extension
+      fileNamePattern="*.$1"
+    fi
+    shift
+    find . -name "$fileNamePattern" | xargs grep -I "$@"
+  else
+    grep -rI "$@" * 2>/dev/null
+  fi
+}
