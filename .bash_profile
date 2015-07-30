@@ -1,5 +1,4 @@
 . ~/.custom/envvars.sh
-. ~/.custom/prezi_envvars.sh
 [[ -s `brew --prefix`/etc/autojump.sh ]] && . `brew --prefix`/etc/autojump.sh
 
 ##
@@ -15,6 +14,4 @@ export PATH=/opt/local/bin:/opt/local/sbin:$PATH
 
 . ~/.custom/prompt.sh
 . ~/.custom/aliases.sh
-. ~/.custom/prezi_aliases.sh
 . ~/.custom/commands.sh
-. ~/.custom/prezi_commands.sh
