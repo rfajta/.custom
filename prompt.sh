@@ -79,11 +79,13 @@ printPrompt() {
   # specify color for for each <host> plus for the 'default'
   declare -A COLORS_HOST=(
     [localhost]=${FG_CYAN}
+    [Robert-Fajtas-MacBook-Pro.local]=${FG_CYAN}
     [default]=${FG_LIGHT_PURPLE}
   )
   # abbreviation of each <host> for the tab name of konsole, plus ['default']=KEY
   declare -A HOST_ABBREVIATION=(
     [localhost]=l
+    [Robert-Fajtas-MacBook-Pro.local]=l
     [default]=KEY
   )
   # no surrounding single or double quotes here
