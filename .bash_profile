@@ -15,3 +15,4 @@ export PATH=/opt/local/bin:/opt/local/sbin:$PATH
 . ~/.custom/prompt.sh
 . ~/.custom/aliases.sh
 . ~/.custom/commands.sh
+. ~/.custom/mvncolor.sh
