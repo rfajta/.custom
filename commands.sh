@@ -105,3 +105,15 @@ r() {
     grep -rI "$@" * 2>/dev/null
   fi
 }
+
+
+t() {
+  if [[ "$1" == "am" ]]
+  then
+    echo "$@"
+    shift
+    git ac "$@"
+  else
+    git "$@"
+  fi 
+}
