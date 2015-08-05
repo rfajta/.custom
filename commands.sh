@@ -108,12 +108,17 @@ r() {
 
 
 t() {
-  if [[ "$1" == "am" ]]
+  if [[ $# == 0 ]]
   then
-    shift
-    git ac "$@"
+    git s
   else
-    git "$@"
+    if [[ "$1" == "am" ]]
+    then
+      shift
+      git ac "$@"
+    else
+      git "$@"
+    fi
   fi 
 }
 
