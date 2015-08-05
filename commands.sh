@@ -110,10 +110,27 @@ r() {
 t() {
   if [[ "$1" == "am" ]]
   then
-    echo "$@"
     shift
     git ac "$@"
   else
     git "$@"
   fi 
+}
+
+f() {
+  if [[ $# == 0 ]]
+  then
+    find .
+  else
+    find . -name "$@"
+  fi
+}
+
+ff() {
+    if [[ $# == 0 ]]
+  then
+    find . -type f
+  else
+    find . -type f -name "$@"
+  fi
 }
