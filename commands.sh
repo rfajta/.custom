@@ -62,22 +62,22 @@ diffc() {
 }
 
 #mu commander
-mc() {
-  if [[ -n "$1" ]]
-  then
-    dir1="$1"
-    if [[ -n "$2" ]]
-    then
-      dir2="$2"
-    fi
-  else
-    dir1="."
-    dir2="."
-  fi
-  dir1="$(/usr/local/bin/greadlink -m "$dir1")"
-  dir2="$(/usr/local/bin/greadlink -m "$dir2")"
-  /Applications/muCommander.app/Contents/MacOS/JavaApplicationStub "$dir1" "$dir2" 1>/dev/null 2>/dev/null &
-}
+# mc() {
+#   if [[ -n "$1" ]]
+#   then
+#     dir1="$1"
+#     if [[ -n "$2" ]]
+#     then
+#       dir2="$2"
+#     fi
+#   else
+#     dir1="."
+#     dir2="."
+#   fi
+#   dir1="$(/usr/local/bin/greadlink -m "$dir1")"
+#   dir2="$(/usr/local/bin/greadlink -m "$dir2")"
+#   /Applications/muCommander.app/Contents/MacOS/JavaApplicationStub "$dir1" "$dir2" 1>/dev/null 2>/dev/null &
+# }
 
 # with single arg
 #   grep -rI "$@" *
@@ -137,5 +137,25 @@ ff() {
     find . -type f
   else
     find . -type f -name "$@"
+  fi
+}
+
+m() {
+  goals=""
+  case $1 in
+    "c") goals="clean " ;;
+    "ci") goals="clean install " ;;
+    "cp") goals="clean package " ;;
+    "ct") goals="clean test " ;;
+    "p") goals="package " ;;
+    "t") goals="test " ;;
+    "i") goals="install " ;;
+#      "") goals=" " ;;
+    *) mvn-color "$@" ;;
+  esac
+  if [[ -n "${goals}" ]]
+  then
+    shift
+    mvn-color ${goals} "$@"
   fi
 }

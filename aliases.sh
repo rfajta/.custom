@@ -1,3 +1,4 @@
+unalias -a
 alias ls='ls -G'
 alias l='ls -lA'
 alias g='grep -I'
@@ -17,7 +18,7 @@ alias adbl='adb logcat -c & adb logcat'
 alias adblg='adb logcat -c & adb logcat | grep "Exception$\|Error$\|Exception: \|Error: \|: 	at \|: 	Caused by: \|: 	\.\.\.\|\*\*\*\*\*"'
 alias au='adb uninstall com.prezi.android'
 alias mvn='mvn-color'
-alias m='mvn-color'
+#alias m='mvn-color'
 alias jl='jar tvf'
 alias reload='. ~/.bash_profile'
 alias jcat='unzip -p'
