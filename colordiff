@@ -1,0 +1,153 @@
+#!/bin/bash
+#
+# Use it for colorizing the normal output of diff by piping its output int this script
+#
+# example
+#   diff file1 file2 | colordiff
+
+. ~/.custom/initcolors.sh
+
+command=$(cat <<sys.exit
+import difflib
+import sys
+
+newLineColor = ""
+newLineDiffColor = ""
+oldLineColor = ""
+oldLineDiffColor = ""
+noColor = ""
+
+def getColoredString(s, boundaries, color1, color2, color3):
+  result = ""
+  colors = (color1, color2)
+  if boundaries[0] == 0:
+    colorIndex = 0
+  else:
+    colorIndex = 1
+    result += colors[colorIndex]
+    boundaries.insert(0, 0)
+
+  prevColorIndex = 1
+  for i in xrange(0, len(boundaries)-1):
+    if boundaries[i] != boundaries[i+1]:
+      if prevColorIndex != colorIndex:
+        result += color3+colors[colorIndex]
+        prevColorIndex = colorIndex
+      result += s[boundaries[i]:boundaries[i+1]]
+    colorIndex = 1-colorIndex
+
+  result += color3
+  return result
+
+def colorDiff2(oldString, newString, newLineColorString = "$FG_GREEN", newLineDiffColorString = "$FG_BLACK$BG_GREEN", oldLineColorString= "$FG_RED", oldLineDiffColorString = "$FG_BLACK$BG_RED", noColorString = "$NO_COLOR"):
+  newLineColor = newLineColorString
+  newLineDiffColor = newLineDiffColorString
+  oldLineColor = oldLineColorString
+  oldLineDiffColor = oldLineDiffColorString
+  noColor = noColorString
+
+  s = difflib.SequenceMatcher(None, oldString, newString)
+  boundariesNew = []
+  boundariesOld = []
+
+  for block in s.get_matching_blocks():
+    boundariesOld.append(block[0])
+    boundariesOld.append(block[0]+block[2])
+    boundariesNew.append(block[1])
+    boundariesNew.append(block[1]+block[2])
+
+  oldColoredString = getColoredString(oldString, boundariesOld, oldLineColor, oldLineDiffColor, noColor)
+  newColoredString = getColoredString(newString, boundariesNew, newLineColor, newLineDiffColor, noColor)
+
+  if len(oldString) == 0:
+    print newColoredString
+  elif len(newString) == 0:
+    print oldColoredString
+  else:
+    print oldColoredString
+    print "---"
+    print newColoredString
+
+if len(sys.argv) == 8:
+  colorDiff2(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7])
+elif len(sys.argv) == 3:
+  colorDiff2(sys.argv[1], sys.argv[2], sys.argv[3])
+else:
+  sys.stderr.write("Incorrect number of parameters\n")
+  sys.exit(1)
+
+sys.exit
+)
+
+
+getDetailedDiffs() {
+  local oldLines="$1"
+  local newLines="$2"
+  local color1="$3"
+  local color2="$4"
+  local color3="$5"
+  local color4="$6"
+  local color5="$7"
+
+  echo "$command" | /usr/bin/python - "$oldLines" "$newLines" "$color1" "$color2" "$color3" "$color4" "$color5"
+}
+
+oldLines=""
+newLines=""
+
+printDiffDetails() {
+    local oldLines="$1"
+    local newLines="$2"
+    local line="$3"
+
+    oldLines="$(echo "$oldLines" | sed 1d)"
+    newLines="$(echo "$newLines" | sed 1d)"
+    local result="$(getDetailedDiffs "$oldLines" "$newLines" "$FG_GREEN" "$FG_BLACK$BG_GREEN" "$FG_RED" "$FG_BLACK$BG_RED" "$NO_COLOR")"
+    echo "$result"
+}
+
+printInfoLine() {
+  local line="$1"
+  if [[ "$(echo "$line")" != "" ]]
+  then
+    echo "$line" | grep -v "^---$" | sed -e "s/^[0-9][0-9]*\(,[0-9][0-9]*\)\{0,1\}[acd][0-9][0-9]*\(,[0-9][0-9]*\)\{0,1\}$/$FG_BROWN&$NO_COLOR/"
+  fi
+}
+
+cat /dev/stdin |
+(
+  read_finished=0
+  until [[ $read_finished -ne 0 ]]
+  do
+    set +e
+    read -r line
+    read_finished=$?
+    set -e
+    # reach the next block
+    if [[ "$(echo "$line" | grep "^diff \|^[0-9]\+\(,[0-9]\+\)\{0,1\}[acd]\([0-9]\+\)\{0,1\}\(,[0-9]\+\)\{0,1\}" )" ]]
+    then
+      if [[ "$oldLines$newLines" != "" ]]
+      then
+        printDiffDetails "$oldLines" "$newLines" "$line"
+        oldLines=""
+        newLines=""
+      fi
+      printInfoLine "$line"
+    # found old lines
+    elif [[ "$(echo "$line" | grep "^<")" ]]
+    then
+      oldLines="$oldLines
+$line"
+    # found new lines
+    elif [[ "$(echo "$line" | grep "^>")" ]]
+    then
+      newLines="$newLines
+$line"
+    else
+      printInfoLine "$line"
+    fi
+  done
+  printDiffDetails "$oldLines" "$newLines" ""
+)
+
+ 
