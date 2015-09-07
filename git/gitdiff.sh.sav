@@ -1,0 +1,29 @@
+#!/bin/bash
+
+columns=$(tput cols)
+
+modified="$(git status | grep -o "modified: .*" | cut -d " " -f 4)"
+files=""
+for seq in "$@"
+do
+    files="$files""$(echo "$modified" | sed "$seq""q;d")
+"
+done
+files="$(echo "$files" | grep -v "^$")"
+allFilesNum="$(echo "$files" | wc -l | tr -d " ")"
+
+counter=1
+for file in $files
+do
+    fileWithCounter="[$counter/$allFilesNum] $file"
+    textLength=${#fileWithCounter}
+    length=$(( $columns - $textLength - 10 ))
+    printf -v line '%*s' "$length"
+    echo "${line// /-} ${fileWithCounter} --------"
+
+    git --no-pager diff "$file"
+    ((counter++))
+done
+
+printf -v line '%*s' "$columns"
+echo "${line// /-}"

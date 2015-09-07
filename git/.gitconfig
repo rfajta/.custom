@@ -1,5 +1,6 @@
 [user]
 	email = robert.fajta@prezi.com
+	name = Robert Fajta
 [color]
 	ui = true
 [alias]
@@ -21,7 +22,14 @@
 	dwa = !~/bin/gitdiff-w.sh -a
 	pop = stash pop
 	nstash = stash save
+	r = !~/bin/gitreset.sh -s
 
 [core]
 	editor = emacs
-	excludesfile = /Users/robertfa/.gitignore
+	excludesfile = /Users/robertfa/.gitignore_global
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true

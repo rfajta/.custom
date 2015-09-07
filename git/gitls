@@ -1,0 +1,24 @@
+  getGitDir() {
+    local dir="${PWD}"
+
+    while [ "${dir}" != "/" ]
+    do
+      if [ -d "${dir}/.git" ]
+      then
+        echo "${dir}"
+        break
+      fi
+      dir=`dirname "${dir}"`
+    done
+  }
+
+
+
+# list files to be committed - s
+git diff HEAD --name-only --cached
+
+# list modified files - m
+git ls-files --modified --exclude-standard
+
+# list unmerged files - u
+git ls-files --unmerged --exclude-standard
