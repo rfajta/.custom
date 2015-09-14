@@ -1,5 +1,5 @@
 [user]
-	email = robert.fajta@prezi.com
+	email = robert@digitalasset.com
 	name = Robert Fajta
 [color]
 	ui = true
@@ -33,3 +33,6 @@
 [mergetool "sourcetree"]
 	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true
+
+[push]
+	default = simple
