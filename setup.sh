@@ -62,7 +62,7 @@ main() {
 	setup_bin "${HOME}/.custom/bin/*"
 	setup_bin "${HOME}/.custom/git/*"
 
-	safe_link "${HOME}/.custom/.gitconfig" "${HOME}/.gitconfig"
+	safe_link "${HOME}/.custom/git/.gitconfig" "${HOME}/.gitconfig"
 	safe_link "${HOME}/.custom/.emacs" "${HOME}/.emacs"
 
 }
