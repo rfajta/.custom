@@ -1,4 +1,4 @@
-#!/bin/bash -u -e -p
+#!/bin/bash -u
 
 usage() {
 	cat >&2 <<- EOF
@@ -26,7 +26,7 @@ safe_link() {
 	if [[ ! -e "${linkName}" ]]
 	then
 		echo "Linking ${linkName} -> ${existingFile}"
-		# ln -s "${existingFile}" "${linkName}"
+		ln -s "${existingFile}" "${linkName}"
 	else
 		if [[ "${FORCE_LINKING}" == "true" ]]
 		then
@@ -35,8 +35,8 @@ safe_link() {
 			if [[ $REPLY =~ ^[y]$ ]]
 			then
 				echo "Removing ${linkName} and linking to ${existingFile}"
-				# rm -rf "${linkName}"
-				# ln -s "${existingFile}" "${linkName}"
+				rm -rf "${linkName}"
+				ln -s "${existingFile}" "${linkName}"
 			fi
 		else
 			echo "${linkName} already exists, not touching it"
@@ -57,7 +57,8 @@ main() {
 	checkParams "$@"
 	# trap 'cleanup "${SOME_PARAM}"' EXIT SIGINT SIGKILL SIGTERM SIGSTOP SIGABRT
 
-	# setup_profile
+	mkdir "${HOME}/bin"
+	setup_profile
 	setup_bin "${HOME}/.custom/bin/*"
 	setup_bin "${HOME}/.custom/git/*"
 
