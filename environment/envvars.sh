@@ -12,7 +12,7 @@ export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
 export PATH="$PATH:.:~/bin"
 
 # init colors
-~/.custom/initcolors.sh
+~/.custom/bin/initcolors.sh
 
 # using clever pager most, which supports olors for e.g. manpages
 export MANPAGER="most"

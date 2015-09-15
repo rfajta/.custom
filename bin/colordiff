@@ -5,7 +5,7 @@
 # example
 #   diff file1 file2 | colordiff
 
-. ~/.custom/initcolors.sh
+. ~/.custom/bin/initcolors.sh
 
 command=$(cat <<sys.exit
 import difflib

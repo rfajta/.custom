@@ -1,4 +1,4 @@
-. ~/.custom/envvars.sh
+. ~/.custom/environment/envvars.sh
 [[ -s `brew --prefix`/etc/autojump.sh ]] && . `brew --prefix`/etc/autojump.sh
 
 ##
@@ -12,7 +12,7 @@ export PATH=/opt/local/bin:/opt/local/sbin:$PATH
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 
-. ~/.custom/prompt.sh
-. ~/.custom/aliases.sh
-. ~/.custom/commands.sh
-. ~/.custom/mvncolor.sh
+. ~/.custom/environment/prompt.sh
+. ~/.custom/environment/aliases.sh
+. ~/.custom/environment/commands.sh
+. ~/.custom/bin/mvncolor.sh

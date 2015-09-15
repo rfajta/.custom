@@ -8,7 +8,7 @@
 #   sudo ln -s /usr/local/Cellar/bash/4.2.45/bin/bash /bin/bash
 
 # initializing color variables
-. ~/.custom/initcolors.sh
+. ~/.custom/bin/initcolors.sh
 
 printPrompt() {
   local EXITCODE=${?#0}
