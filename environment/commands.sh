@@ -131,12 +131,30 @@ f() {
   fi
 }
 
+fl() {
+  if [[ $# == 0 ]]
+  then
+    find . -exec ls -lA {} \;
+  else
+    find . -name "$@" -exec ls -lA {} \;
+  fi
+}
+
 ff() {
     if [[ $# == 0 ]]
   then
     find . -type f
   else
     find . -type f -name "$@"
+  fi
+}
+
+ffl() {
+    if [[ $# == 0 ]]
+  then
+    find . -type f -exec ls -lA {} \;
+  else
+    find . -type f -name "$@" -exec ls -lA {} \;
   fi
 }
 
