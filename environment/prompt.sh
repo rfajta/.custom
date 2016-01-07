@@ -190,6 +190,13 @@ printPrompt() {
       else
         echo -n "${branch}"
       fi
+      branchSha="${branch}"
+
+      if [[ "${branch}" =~ 'HEAD detached at' ]]
+      then
+        branchSha=$(git log -1 --oneline --abbrev=5)
+        branchSha="${branchSha:0:5}"
+      fi
 
       # staged files
       git diff --quiet --cached --exit-code
@@ -209,7 +216,7 @@ printPrompt() {
        changeIndicator="${changeIndicator}?"
       fi
       # unpushed commits
-      if [[ -n $(git log ${branch} --not --remotes --oneline) ]]
+      if [[ -n $(git log ${branchSha} --not --remotes --oneline) ]]
       then
        changeIndicator="${changeIndicator}!"
       fi
