@@ -157,10 +157,10 @@ main() {
 	# print files one per line unquoted, or single line quoted separated with a space
 	if [[ $onePerLine ]]
 	then
-		echo "$fileList" | grep -v "^$"
+		echo "$fileList" | grep -v "^$" | uniq
 	else
 		# log "$fileList"
-		fileList="$(echo -n "$fileList" | grep -v "^$" | sed -e "s/^.*$/ \"&\"/" | tr -d "\n")"
+		fileList="$(echo -n "$fileList" | grep -v "^$" | uniq | sed -e "s/^.*$/ \"&\"/" | tr -d "\n")"
 		echo "${fileList:1}" | grep -v "^$"
 	fi
 }

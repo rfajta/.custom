@@ -162,12 +162,20 @@ m() {
   goals=""
   case $1 in
     "c") goals="clean " ;;
+    "cd") goals="clean deploy " ;;
     "ci") goals="clean install " ;;
     "cp") goals="clean package " ;;
     "ct") goals="clean test " ;;
     "p") goals="package " ;;
     "t") goals="test " ;;
     "i") goals="install " ;;
+    "d") goals="deploy " ;;
+    "qci") goals="clean install -Dmaven.test.skip=true" ;;
+    "qcp") goals="clean package -Dmaven.test.skip=true" ;;
+    "qct") goals="clean test -Dmaven.test.skip=true" ;;
+    "qp") goals="package -Dmaven.test.skip=true" ;;
+    "qt") goals="test -Dmaven.test.skip=true" ;;
+    "qi") goals="install -Dmaven.test.skip=true" ;;
 #      "") goals=" " ;;
     *) mvn-color "$@" ;;
   esac

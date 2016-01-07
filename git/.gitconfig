@@ -6,7 +6,7 @@
 [alias]
 	a = add
 	co = checkout
-	c = commit
+	c = commit -m 
 	d = --no-pager diff
 	s = !~/bin/gitstatus.sh
 	com = !~/bin/gitcheckout.sh -m
