@@ -125,36 +125,36 @@ t() {
 f() {
   if [[ $# == 0 ]]
   then
-    find .
+    find . 2>/dev/null
   else
-    find . -name "$@"
+    find . -name "$@" 2>/dev/null
   fi
 }
 
 fl() {
   if [[ $# == 0 ]]
   then
-    find . -exec ls -lA {} \;
+    find . -exec ls -lA {} \; 2>/dev/null
   else
-    find . -name "$@" -exec ls -lA {} \;
+    find . -name "$@" -exec ls -lA {} \; 2>/dev/null
   fi
 }
 
 ff() {
     if [[ $# == 0 ]]
   then
-    find . -type f
+    find . -type f 2>/dev/null
   else
-    find . -type f -name "$@"
+    find . -type f -name "$@" 2>/dev/null
   fi
 }
 
 ffl() {
     if [[ $# == 0 ]]
   then
-    find . -type f -exec ls -lA {} \;
+    find . -type f -exec ls -lA {} \; 2>/dev/null
   else
-    find . -type f -name "$@" -exec ls -lA {} \;
+    find . -type f -name "$@" -exec ls -lA {} \; 2>/dev/null
   fi
 }
 
