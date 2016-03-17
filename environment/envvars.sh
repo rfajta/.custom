@@ -20,3 +20,8 @@ export MANPAGER="most"
 #export JAVA8_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_51.jdk/Contents/Home
 export JAVA_HOME=`/usr/libexec/java_home -v '1.8*'`
 #JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_51.jdk/Contents/Home
+
+export GOPATH=$HOME/.go
+
+export PAGER=more
+

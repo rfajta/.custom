@@ -1,4 +1,4 @@
-unalias -a
+#unalias -a
 alias ls='ls -G'
 alias l='ls -lA'
 alias g='grep -I'

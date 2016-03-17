@@ -185,3 +185,17 @@ m() {
     mvn-color ${goals} "$@"
   fi
 }
+
+
+function preexec() {
+  timer=${timer:-$SECONDS}
+}
+
+function precmd() {
+  if [ $timer ]; then
+    timer_show=$(($SECONDS - $timer))
+    export EXEC_TIME="${timer_show}"
+    unset timer
+  fi
+}
+
