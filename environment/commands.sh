@@ -182,7 +182,7 @@ m() {
   if [[ -n "${goals}" ]]
   then
     shift
-    mvn-color ${goals} "$@"
+    eval mvn-color ${goals} "$@"
   fi
 }
 
