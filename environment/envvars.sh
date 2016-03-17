@@ -1,4 +1,7 @@
-shopt -s autocd
+if [[ "${SHELL}" != "/bin/zsh" ]]
+then
+  shopt -s autocd
+fi
 export CDPATH=./:~/
 
 # Tell ls to be colourful
