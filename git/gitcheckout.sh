@@ -2,7 +2,5 @@
 
 switch=$1
 shift
-files="$(~/bin/gitls.sh -1 $switch $@)"
-# echo "[$files]"
 
-git checkout $files
+~/bin/gitls.sh -1 $switch $@ | tr '\n' '\0' | xargs -0 git checkout

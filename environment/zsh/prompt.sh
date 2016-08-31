@@ -259,7 +259,13 @@ printPrompt() {
     else
       echo -n " "
     fi
-    echo -n "${FG_PURPLE}(${EXEC_TIME})${NO_COLOR} "    
+    if [[ ${EXEC_TIME} -ge 59 ]]
+    then
+      execTime=$(date -u -r ${EXEC_TIME} "+%-M:%S")
+    else
+      execTime=${EXEC_TIME}
+    fi
+    echo -n "${FG_PURPLE}(${execTime})${NO_COLOR} "    
     eval "getPart "${COLOR_TIME}${COLOR_PROMPT_BG}" "${COMMAND_TIME}""
   }
 

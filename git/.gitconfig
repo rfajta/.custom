@@ -6,6 +6,7 @@
 [alias]
 	a = add
 	co = checkout
+	col = checkout master_with_libcons
 	c = commit -m 
 	d = --no-pager diff
 	s = !~/bin/gitstatus.sh
@@ -21,8 +22,11 @@
 	dwu = !~/bin/gitdiff-w.sh -u
 	dwa = !~/bin/gitdiff-w.sh -a
 	pop = stash pop
-	nstash = stash save
+	save = !~/bin/gitstash.sh
+	list = !~/bin/gitstashlist.sh
+	remove = !~/bin/gitstashremove.sh
 	r = !~/bin/gitreset.sh -s
+	alias = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\ \t => \\2/' | sort
 
 [core]
 	editor = emacs

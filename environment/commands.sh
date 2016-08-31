@@ -89,18 +89,24 @@ diffc() {
 r() {
   if [[ "$2" != "" ]]
   then
-    fileNamePattern="$1"
-    # the below *.* must not be quoted to check if the pattern contains a .
-    if [[ "$1" == *.* ]]
+    if [[ "$1" == "code" ]]
     then
-      # . in the filename, so assume it is a ready pattern already, and not only an extension
+      shift
+      find . -name "*.java" -or -name "*.scala" | xargs grep -I "$@"
+    else      
       fileNamePattern="$1"
-    else
-      # if no . in the pattern then assume it is a file extension
-      fileNamePattern="*.$1"
+      # the below *.* must not be quoted to check if the pattern contains a .
+      if [[ "$1" == *.* ]]
+      then
+        # . in the filename, so assume it is a ready pattern already, and not only an extension
+        fileNamePattern="$1"
+      else
+        # if no . in the pattern then assume it is a file extension
+        fileNamePattern="*.$1"
+      fi
+      shift
+      find . -name "$fileNamePattern" | xargs grep -I "$@"
     fi
-    shift
-    find . -name "$fileNamePattern" | xargs grep -I "$@"
   else
     grep -rI "$@" * 2>/dev/null
   fi
@@ -166,6 +172,7 @@ m() {
     "ci") goals="clean install " ;;
     "cp") goals="clean package " ;;
     "ct") goals="clean test " ;;
+    "cc") goals="clean compile -Dfrontend.skip=true" ;;
     "p") goals="package " ;;
     "t") goals="test " ;;
     "i") goals="install " ;;
@@ -182,6 +189,12 @@ m() {
   if [[ -n "${goals}" ]]
   then
     shift
+    if [[ "$1" == "-noui" ]] || [[ "$1" == "--noui" ]]
+    then
+      goals="${goals}"" -Dfrontend.skip=true"
+      shift
+    fi
+    # eval mvn-color ${goals} -Djava.library.path=/usr/local/lib "$@"
     eval mvn-color ${goals} "$@"
   fi
 }

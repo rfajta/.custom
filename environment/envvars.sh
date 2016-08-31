@@ -28,3 +28,4 @@ export GOPATH=$HOME/.go
 
 export PAGER=more
 
+export NOUI='-Dfrontend.skip=true'
