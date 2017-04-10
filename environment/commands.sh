@@ -189,9 +189,12 @@ m() {
   if [[ -n "${goals}" ]]
   then
     shift
-    if [[ "$1" == "-noui" ]] || [[ "$1" == "--noui" ]]
+    if [[ "$1" != "-withui" ]] && [[ "$1" != "--withui" ]]
     then
       goals="${goals}"" -Dfrontend.skip=true"
+      echo 'SKIPPING UI'
+    else
+      echo 'HAVING UI'
       shift
     fi
     # eval mvn-color ${goals} -Djava.library.path=/usr/local/lib "$@"
