@@ -65,7 +65,7 @@ printPrompt() {
   # the <user>
   COMMAND_USER='${USER}'
   declare -A COLORS_USER=(
-    [robertfa]=${FG_GREEN}
+    [robert]=${FG_CYAN}
     [jenkins]=${FG_PURPLE}
     [default]=${FG_CYAN}
   )
@@ -79,7 +79,7 @@ printPrompt() {
   # specify color for for each <host> plus for the 'default'
   declare -A COLORS_HOST=(
     [localhost]=${FG_CYAN}
-    [RobertFajtasMBP]=${FG_CYAN}
+    [Robert-Laptop]=${FG_CYAN}
     [Robert-Fajtas-MacBook-Pro.local]=${FG_CYAN}
     [default]=${FG_LIGHT_PURPLE}
   )
@@ -87,7 +87,7 @@ printPrompt() {
   declare -A HOST_ABBREVIATION=(
     [localhost]=l
     [Robert-Fajtas-MacBook-Pro.local]=l
-    [RobertFajtasMBP]=l
+    [Robert-Laptop]=l
     [default]=KEY
   )
   # no surrounding single or double quotes here
@@ -120,10 +120,9 @@ printPrompt() {
   getLengthOfVisiblePart() {
     local text="$1"
     # filtering out color control characters
-    text="$(echo "${text}" | sed -e "s/[^:print:]\[[0-9]*\(;[0-9]*\)*m[^:print:]//g")"
+    text="$(echo -n "${text}" | sed -e "s/[^[:print:]]\[[0-9]*\(;[0-9]*\)*m//g")"
     echo -n ${#text}
   }
-
 
   composeIndentation() {
     local text="$1$2"
