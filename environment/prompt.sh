@@ -65,22 +65,22 @@ printPrompt() {
   # the <user>
   COMMAND_USER='${USER}'
   declare -A COLORS_USER=(
-    [robert]=${FG_CYAN}
+    [robert]=${FG_LIGHT_CYAN}
     [jenkins]=${FG_PURPLE}
-    [default]=${FG_CYAN}
+    [default]=${FG_LIGHT_CYAN}
   )
   COLOR_USER='$(getValue COLORS_USER ${USER})'
 
   # the @ sign
   COMMAND_AT='@'
-  COLOR_AT='${FG_BROWN}'
+  COLOR_AT='${FG_YELLOW}'
 
   # host
   # specify color for for each <host> plus for the 'default'
   declare -A COLORS_HOST=(
-    [localhost]=${FG_CYAN}
-    [Robert-Laptop]=${FG_CYAN}
-    [Robert-Fajtas-MacBook-Pro.local]=${FG_CYAN}
+    [localhost]=${FG_LIGHT_CYAN}
+    [Robert-Laptop]=${FG_LIGHT_CYAN}
+    [Robert-Fajtas-MacBook-Pro.local]=${FG_LIGHT_CYAN}
     [default]=${FG_LIGHT_PURPLE}
   )
   # abbreviation of each <host> for the tab name of konsole, plus ['default']=KEY
@@ -96,24 +96,24 @@ printPrompt() {
 
   # <path>
   COMMAND_PWD="'${PWD}'"
-  COLOR_PWD='${FG_BROWN}'
+  COLOR_PWD='${FG_YELLOW}'
 
   # <time>
   COMMAND_TIME='$(date +%H:%M:%S)'
-  COLOR_TIME='${FG_BROWN}'
+  COLOR_TIME='${FG_YELLOW}'
 
   # <exit code>
   COMMAND_EXITCODE='\ ${EXITCODE}\ '
   COLOR_EXITCODE='${BG_BLUE}${FG_YELLOW}'
 
   # <git>
-  COMMAND_GIT=\$\(/usr/local/bin/vcprompt\ -f\ \'[\${FG_GREEN}%a%m%u\ %b${FG_RED}\%a\%m\%u\${FG_BROWN}]\'\)
+  COMMAND_GIT=\$\(/usr/local/bin/vcprompt\ -f\ \'[\${FG_GREEN}%a%m%u\ %b${FG_RED}\%a\%m\%u\${FG_YELLOW}]\'\)
   declare -A COLORS_GIT=(
-    [default]="${FG_BROWN}"
+    [default]="${FG_YELLOW}"
   )
   COLOR_GIT=\"\$\(getValue\ COLORS_GIT\)\"
-  COLOR_GIT_BRACKETS="${FG_BROWN}"
-  COLOR_GIT_BRANCH="${FG_CYAN}"
+  COLOR_GIT_BRACKETS="${FG_YELLOW}"
+  COLOR_GIT_BRANCH="${FG_LIGHT_CYAN}"
   COLOR_GIT_CHANGES="${FG_RED}"
   COLOR_GIT_STASH="${FG_RED}"
 

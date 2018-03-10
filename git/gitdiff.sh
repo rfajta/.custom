@@ -1,7 +1,7 @@
 #!/bin/bash
 
 columns=$(tput cols)
-
+separatorColor="${FG_BLUE}${BG_CYAN}"
 # modified="$(git status | grep -o "modified: .*" | cut -d " " -f 4)"
 # files=""
 # for seq in "$@"
@@ -18,11 +18,11 @@ counter=1
 staged=0
 for file in $files
 do
-    fileWithCounter="[$counter/$allFilesNum] $file"
+    fileWithCounter="[$counter/$allFilesNum]  $file"
     textLength=${#fileWithCounter}
-    length=$(( $columns - $textLength - 10 ))
+    length=$(( $columns - $textLength - 15 ))
     printf -v line '%*s' "$length"
-    echo "${line// /-} ${fileWithCounter} --------"
+    echo "${separatorColor} >>>         ${fileWithCounter} ${line// / }${NO_COLOR}"
     if [[ "$switch" == "-s" ]]
     then
     	# compare the files in the staged area
@@ -54,4 +54,4 @@ do
 done
 
 printf -v line '%*s' "$columns"
-echo "${line// /-}"
+echo "${separatorColor}${line// /=}${NO_COLOR}"
