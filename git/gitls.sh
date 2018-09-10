@@ -56,9 +56,10 @@ filesUnmerged() {
 }
 
 filesAll() {
-	filesToBeCommitted
-	filesModified
-	filesUnmerged
+	gitDir="$1"
+	filesToBeCommitted "$gitDir"
+	filesModified "$gitDir"
+	filesUnmerged "$gitDir"
 }
 
 invokeCommandAndFilter() {
@@ -66,7 +67,7 @@ invokeCommandAndFilter() {
 	local params="$2"
 	if [[ -n "$command" ]]
 	then
-		local allFiles="$(eval "$command")"
+		local allFiles="$(eval "$command $gitDir")"
 		# log "$allFiles"
 		if [[ -n "$params" ]]
 		then
@@ -87,7 +88,7 @@ log() {
 main() {
 	gitDir="$(getGitDir)"
 	local command=""
-	local params=""
+	local params="$gitDir"
 	local onePerLine=""
 	if [ "$#" == "0" ]
 	then
@@ -95,7 +96,8 @@ main() {
 	fi
 
 	local fileList=""
-	local maxFileNum=$(invokeCommandAndFilter "filesAll" "" | wc -l)
+	local maxFileNum=$(invokeCommandAndFilter "filesAll" "$gitDir" | wc -l)
+
 	while (( "$#" ))
 	do
 		case "$1" in
