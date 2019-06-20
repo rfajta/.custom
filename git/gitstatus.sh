@@ -17,7 +17,7 @@ do
 		paddedGlobalCounter="$(printf "%3d" $globalCounter)"
 		paddedLocalCounter="$(printf "%3d" $localCounter)"
 		# echo "$paddedLocalCounter $paddedGlobalCounter"
-		echo "$line" | sed -e "{s/^	/ $paddedGlobalCounter $paddedLocalCounter / ; s/.*/& $localCounter/ ;}"
+		echo " $paddedGlobalCounter $paddedLocalCounter $line  $localCounter" | tr -d "\t"
 		(( globalCounter++ ))
 		(( localCounter++ ))
 	else

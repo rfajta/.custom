@@ -2,7 +2,8 @@ if [[ "${SHELL}" != "/bin/zsh" ]]
 then
   shopt -s autocd
 fi
-export CDPATH=./:~/
+# export CDPATH=./:~/
+unset CDPATH
 
 # Tell ls to be colourful
 export CLICOLOR=1
@@ -15,7 +16,7 @@ LS_COLORS='rs=0:di=00;33:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:c
 export LS_COLORS
 
 # PATH
-export PATH="$PATH:.:~/bin"
+export PATH="$PATH:.:~/bin:/home/robert/.daml/bin"
 
 # init colors
 ~/.custom/bin/initcolors.sh

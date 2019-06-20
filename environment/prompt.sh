@@ -60,7 +60,7 @@ printPrompt() {
   #   [default]=""
   # )
   # COLOR_PROMPT_BG='$(getValue PROMPT_BG_COLORS ${USER})'
-  COLOR_PROMPT_BG=""
+  COLOR_PROMPT_BG="${BG_BLACK}"
 
   # the <user>
   COMMAND_USER='${USER}'

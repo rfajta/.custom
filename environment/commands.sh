@@ -164,28 +164,79 @@ ffl() {
   fi
 }
 
+# m() {
+#   goals=""
+#   case $1 in
+#     "c") goals="clean " ;;
+#     "cd") goals="clean deploy " ;;
+#     "ci") goals="clean install " ;;
+#     "cp") goals="clean package " ;;
+#     "ct") goals="clean test " ;;
+#     "cc") goals="clean compile -Dfrontend.skip=true" ;;
+#     "p") goals="package " ;;
+#     "t") goals="test " ;;
+#     "i") goals="install " ;;
+#     "d") goals="deploy " ;;
+#     "qci") goals="clean install -Dmaven.test.skip=true" ;;
+#     "qcp") goals="clean package -Dmaven.test.skip=true" ;;
+#     "qct") goals="clean test -Dmaven.test.skip=true" ;;
+#     "qp") goals="package -Dmaven.test.skip=true" ;;
+#     "qt") goals="test -Dmaven.test.skip=true" ;;
+#     "qi") goals="install -Dmaven.test.skip=true" ;;
+# #      "") goals=" " ;;
+#     *) mvn-color "$@" ;;
+#   esac
+#   if [[ -n "${goals}" ]]
+#   then
+#     shift
+#     if [[ "$1" != "-withui" ]] && [[ "$1" != "--withui" ]]
+#     then
+#       goals="${goals}"" -Dfrontend.skip=true"
+#       echo 'SKIPPING UI'
+#     else
+#       echo 'HAVING UI'
+#       shift
+#     fi
+#     # eval mvn-color ${goals} -Djava.library.path=/usr/local/lib "$@"
+#     eval mvn-color ${goals} "$@"
+#   fi
+# }
+
+
+function preexec() {
+  timer=${timer:-$SECONDS}
+}
+
+function precmd() {
+  if [ $timer ]; then
+    timer_show=$(($SECONDS - $timer))
+    export EXEC_TIME="${timer_show}"
+    unset timer
+  fi
+}
+
 m() {
   goals=""
-  case $1 in
-    "c") goals="clean " ;;
-    "cd") goals="clean deploy " ;;
-    "ci") goals="clean install " ;;
-    "cp") goals="clean package " ;;
-    "ct") goals="clean test " ;;
-    "cc") goals="clean compile -Dfrontend.skip=true" ;;
-    "p") goals="package " ;;
-    "t") goals="test " ;;
-    "i") goals="install " ;;
-    "d") goals="deploy " ;;
-    "qci") goals="clean install -Dmaven.test.skip=true" ;;
-    "qcp") goals="clean package -Dmaven.test.skip=true" ;;
-    "qct") goals="clean test -Dmaven.test.skip=true" ;;
-    "qp") goals="package -Dmaven.test.skip=true" ;;
-    "qt") goals="test -Dmaven.test.skip=true" ;;
-    "qi") goals="install -Dmaven.test.skip=true" ;;
-#      "") goals=" " ;;
-    *) mvn-color "$@" ;;
-  esac
+  param="$1"
+  notest=""
+  for i in $(seq 1 ${#param})
+  do
+    case ${param:i-1:1} in
+      "c") goals="$goals clean" ;;
+      "d") goals="$goals deploy" ;;
+      "i") goals="$goals install" ;;
+      "o") goals="$goals compile" ;;
+      "t") goals="$goals test" ;;
+      "f") goals="$goals fmt:format" ;;
+      "p") goals="$goals package" ;;
+      "c") goals="$goals clean" ;;
+      "q") notest=" -Dmaven.test.skip=true" ;;
+      *) goals="$param" ; return ;;
+    esac
+  done
+  goals="$goals$notest"
+  echo "Maven goals:$goals $@"
+  echo ""
   if [[ -n "${goals}" ]]
   then
     shift
@@ -202,16 +253,13 @@ m() {
   fi
 }
 
-
-function preexec() {
-  timer=${timer:-$SECONDS}
-}
-
-function precmd() {
-  if [ $timer ]; then
-    timer_show=$(($SECONDS - $timer))
-    export EXEC_TIME="${timer_show}"
-    unset timer
+agg() {
+  if [[ $# > 1 ]]
+  then
+    suffix="$1"
+    shift
+    ag -G "\.$suffix$" "$@"
+  else
+    ag $@
   fi
 }
-
