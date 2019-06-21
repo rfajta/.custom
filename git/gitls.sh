@@ -9,7 +9,7 @@ usage() {
 		Arguments:
 		  -s - "Changes to be committed"
 		  -m - "Changes not staged for commit"
-		  -u - "Unmerged path"
+		  -u - "Untracked path"
 		  -a - all changes in the above order combined
 		  -1 - one file per line, otherwise all files are quoted and separated with a space
 		  <number_or_range_list> - number of file to show from the given category
@@ -49,17 +49,17 @@ filesModified() {
 	git ls-files --modified --exclude-standard -- "$gitDir"
 }
 
-filesUnmerged() {
+filesUntracked() {
 	gitDir="$1"
-	# list unmerged files - u
-	git ls-files --unmerged --exclude-standard -- "$gitDir"
+	# list untracked files - u
+	git ls-files --others --exclude-standard -- "$gitDir"
 }
 
 filesAll() {
 	gitDir="$1"
 	filesToBeCommitted "$gitDir"
 	filesModified "$gitDir"
-	filesUnmerged "$gitDir"
+	filesUntracked "$gitDir"
 }
 
 invokeCommandAndFilter() {
@@ -122,7 +122,7 @@ main() {
 			-u)
 				fileList="$fileList""$(invokeCommandAndFilter "$command" "$params")
 "
-				command="filesUnmerged"
+				command="filesUntracked"
 				params=""
 			;;
 			-1)
