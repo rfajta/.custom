@@ -1,3 +1,19 @@
+storelogs() {
+  for logfile in $@
+  do
+    # logfile="$1"
+    if [[ -f "$logfile" ]]
+    then
+      echo "Persisting session history from $logfile to ${HISTFILE:-$HOME/.bash_history}"
+      cat "$logfile" >> "${HISTFILE:-$HOME/.bash_history}"
+      rm "$logfile"
+    else
+      echo "[$logfile] provided as argument does not exist or is not a file"
+    fi
+  done
+}
+
+
 # create directories even on multiple levels and enters into it
 mdcd() {
   mkdir -p "$@" && builtin cd "$@"
@@ -10,7 +26,9 @@ mdcd() {
 # with one param, if that contains several dots, then it resolves each ..[.]* to ..[/..]* and enters into that
 # e.g. '...' means '../..', while '.....' means '../../../..'
 #
-# otherwise does the regular cd
+# with no params
+#   - trying to cd into a file? cd its directory instead
+#   - does the regular cd
 cd() {
   if [[ "$2" != "" ]]
   then
@@ -261,5 +279,89 @@ agg() {
     ag -G "\.$suffix$" "$@"
   else
     ag $@
+  fi
+}
+
+function make() {
+  makeCommand="$(which make)"
+  t=$(timer)
+  echo "${FG_CYAN}${BG_LIGHT_GREY}    Started at: "$(date +%H:%M:%S)"    ${NO_COLOR}" ; /usr/bin/time -o /dev/stdout -f "${FG_BLUE}${BG_LIGHT_GREY}    Execution time: %E    ${NO_COLOR}" "${makeCommand}" "$@"
+  ellapseSeconds=$(timer ${t} | cut -f1 -d.)
+  echo "$(date +%Y-%m-%d),${ellapseSeconds},make $@" >> ~/damlBuildAndRunTime.txt
+  # (paplay /usr/share/sounds/ubuntu/stereo/service-logout.ogg && paplay /usr/share/sounds/ubuntu/stereo/service-login.ogg) &
+}
+
+  # If called with no arguments a new timer is returned.
+  # If called with arguments the first is used as a timer
+  # value and the elapsed time is returned in the form HH:MM:SS.
+  #
+  # Example:
+  #  t=$(timer)
+  #  printf 'Elapsed time: %s\n' $(timer ${t})
+  function timer() {
+      if [[ $# -eq 0 ]]; then
+          echo $(date '+%s%6N')
+      else
+          local  stime=$1
+          etime=$(date '+%s%6N')
+
+          if [[ -z "${stime}" ]]; then stime=${etime}; fi
+
+          dt=$((etime - stime))
+          dmm=$((dt % 1000000))
+          ds=$(((dt / 1000000) % 60))
+          dm=$(((dt / 60000000) % 60))
+          dh=$((dt / 3600000000))
+          printf '%d:%02d:%02d.%06d  %d' ${dh} ${dm} ${ds} ${dmm} ${dt}
+      fi
+  }
+
+function em() {
+  while [[ $# -gt 0 ]]
+  do
+    partialFile="${1}"
+    shift
+    echo "partialFile: [${partialFile}]"
+    fileName="$(echo "${partialFile}" | grep -o "\/[^\/]*$" | tr -d "/")"
+    echo "fileName: [${fileName}]"
+    file="$(f "${fileName}")"
+    echo "file: [${file}]"
+    e "${file}"
+    echo "done"
+  done
+}
+
+function elm() {
+  msgType="$1"
+  files="$(f 2*.xml | grep "\-\-\-[^\-]*\-${msgType}\-")"
+  echo "files: [${files}]"
+  e $files
+  # lm | grep -o "/[^/]*$" | tr -d "/" | grep "\-"
+}
+
+function agdt () {
+  ag -G "\.daml$" "$@" app/daml-model/src/DA/ASX/Test/
+}
+
+function lm() {
+  changedDir="false"
+  if [[ "$(basename "`pwd`")" != "logs" ]]
+  then
+    cd logs
+    changedDir="true"
+  fi
+  if (($# < 1))
+  then
+    lmsimple | cat -b | sed -e "s/\(^ *[0-9]*\)\(.*\)/\1\2\1/" | grep "^ *[0-9]*\|[0-9]*$\|[a-z]\+-[0-9]*"
+    # echo "Provide one or more numbers as parameters" 
+  else
+    lines="$(echo "$@ " | sed -e "s/ /p;/g")"
+    files="$(lmsimple | sed -n "$lines" | cut -d/ -f3)"
+    echo "$files"
+    echo "$files" | xargs -I % sh -c 'subl $(find . -name %)'
+  fi
+  if [[ "$changedDir" == "true" ]]
+  then
+    cd - 2>&1 >/dev/null
   fi
 }

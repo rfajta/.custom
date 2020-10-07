@@ -8,7 +8,7 @@
 	co = checkout
 	col = checkout master_with_libcons
 	c = commit -m 
-	d = --no-pager diff
+	d = diff
 	s = !~/bin/gitstatus.sh
 	com = !~/bin/gitcheckout.sh -m
 	ac = !~/bin/gitadd.sh -m
@@ -26,14 +26,50 @@
 	list = !~/bin/gitstashlist.sh
 	remove = !~/bin/gitstashremove.sh
 	r = !~/bin/gitreset.sh -s
+	ca = !git commit --amend --no-edit
+	rem = !~/bin/gitRebaseToMaster.sh
+	l = !git log --pretty=format:'%C(yellow)%h  %C(cyan)%>(12)%ad  %Cgreen%<(16)%aN%n  %Creset%s%n' --date=iso -1
+	l1 = !git log --pretty=format:'%C(yellow)%h  %C(cyan)%>(12)%ad  %Cgreen%<(16)%aN%n  %Creset%s%n' --date=iso -1
+	l2 = !git log --pretty=format:'%C(yellow)%h  %C(cyan)%>(12)%ad  %Cgreen%<(16)%aN%n  %Creset%s%n' --date=iso -2
+	l3 = !git log --pretty=format:'%C(yellow)%h  %C(cyan)%>(12)%ad  %Cgreen%<(16)%aN%n  %Creset%s%n' --date=iso -3
+	l4 = !git log --pretty=format:'%C(yellow)%h  %C(cyan)%>(12)%ad  %Cgreen%<(16)%aN%n  %Creset%s%n' --date=iso -4
+	l5 = !git log --pretty=format:'%C(yellow)%h  %C(cyan)%>(12)%ad  %Cgreen%<(16)%aN%n  %Creset%s%n' --date=iso -5
+	l6 = !git log --pretty=format:'%C(yellow)%h  %C(cyan)%>(12)%ad  %Cgreen%<(16)%aN%n  %Creset%s%n' --date=iso -6
+	l7 = !git log --pretty=format:'%C(yellow)%h  %C(cyan)%>(12)%ad  %Cgreen%<(16)%aN%n  %Creset%s%n' --date=iso -7
+	l8 = !git log --pretty=format:'%C(yellow)%h  %C(cyan)%>(12)%ad  %Cgreen%<(16)%aN%n  %Creset%s%n' --date=iso -8
+	l9 = !git log --pretty=format:'%C(yellow)%h  %C(cyan)%>(12)%ad  %Cgreen%<(16)%aN%n  %Creset%s%n' --date=iso -9
+	lf = !git show --pretty='%n%C(cyan)╔════════════════════════════════════════════════════════════════════════════════%n║ %C(yellow)%h  %C(cyan)%>(12)%ad  %C(green)%<(16)%aN%n%C(cyan)║   %Creset%s%n' --name-status -1
+	lf1 = !git show --pretty='%n%C(cyan)╔════════════════════════════════════════════════════════════════════════════════%n║ %C(yellow)%h  %C(cyan)%>(12)%ad  %C(green)%<(16)%aN%n%C(cyan)║   %Creset%s%n' --name-status -1
+	lf2 = !git show --pretty='%n%C(cyan)╔════════════════════════════════════════════════════════════════════════════════%n║ %C(yellow)%h  %C(cyan)%>(12)%ad  %C(green)%<(16)%aN%n%C(cyan)║   %Creset%s%n' --name-status -2
+	lf3 = !git show --pretty='%n%C(cyan)╔════════════════════════════════════════════════════════════════════════════════%n║ %C(yellow)%h  %C(cyan)%>(12)%ad  %C(green)%<(16)%aN%n%C(cyan)║   %Creset%s%n' --name-status -3
+	lf4 = !git show --pretty='%n%C(cyan)╔════════════════════════════════════════════════════════════════════════════════%n║ %C(yellow)%h  %C(cyan)%>(12)%ad  %C(green)%<(16)%aN%n%C(cyan)║   %Creset%s%n' --name-status -4
+	lf5 = !git show --pretty='%n%C(cyan)╔════════════════════════════════════════════════════════════════════════════════%n║ %C(yellow)%h  %C(cyan)%>(12)%ad  %C(green)%<(16)%aN%n%C(cyan)║   %Creset%s%n' --name-status -5
+	lf6 = !git show --pretty='%n%C(cyan)╔════════════════════════════════════════════════════════════════════════════════%n║ %C(yellow)%h  %C(cyan)%>(12)%ad  %C(green)%<(16)%aN%n%C(cyan)║   %Creset%s%n' --name-status -6
+	lf7 = !git show --pretty='%n%C(cyan)╔════════════════════════════════════════════════════════════════════════════════%n║ %C(yellow)%h  %C(cyan)%>(12)%ad  %C(green)%<(16)%aN%n%C(cyan)║   %Creset%s%n' --name-status -7
+	lf8 = !git show --pretty='%n%C(cyan)╔════════════════════════════════════════════════════════════════════════════════%n║ %C(yellow)%h  %C(cyan)%>(12)%ad  %C(green)%<(16)%aN%n%C(cyan)║   %Creset%s%n' --name-status -8
+	lf9 = !git show --pretty='%n%C(cyan)╔════════════════════════════════════════════════════════════════════════════════%n║ %C(yellow)%h  %C(cyan)%>(12)%ad  %C(green)%<(16)%aN%n%C(cyan)║   %Creset%s%n' --name-status -9
+	ld = !git show --pretty='%n%C(cyan)╔════════════════════════════════════════════════════════════════════════════════%n║ %C(yellow)%h  %C(cyan)%>(12)%ad  %C(green)%<(16)%aN%n%C(cyan)║   %Creset%s%n' -1
+	ld1 = !git show --pretty='%n%C(cyan)╔════════════════════════════════════════════════════════════════════════════════%n║ %C(yellow)%h  %C(cyan)%>(12)%ad  %C(green)%<(16)%aN%n%C(cyan)║   %Creset%s%n' -1
+	ld2 = !git show --pretty='%n%C(cyan)╔════════════════════════════════════════════════════════════════════════════════%n║ %C(yellow)%h  %C(cyan)%>(12)%ad  %C(green)%<(16)%aN%n%C(cyan)║   %Creset%s%n' -2
+	ld3 = !git show --pretty='%n%C(cyan)╔════════════════════════════════════════════════════════════════════════════════%n║ %C(yellow)%h  %C(cyan)%>(12)%ad  %C(green)%<(16)%aN%n%C(cyan)║   %Creset%s%n' -3
+	ld4 = !git show --pretty='%n%C(cyan)╔════════════════════════════════════════════════════════════════════════════════%n║ %C(yellow)%h  %C(cyan)%>(12)%ad  %C(green)%<(16)%aN%n%C(cyan)║   %Creset%s%n' -4
+	ld5 = !git show --pretty='%n%C(cyan)╔════════════════════════════════════════════════════════════════════════════════%n║ %C(yellow)%h  %C(cyan)%>(12)%ad  %C(green)%<(16)%aN%n%C(cyan)║   %Creset%s%n' -5
+	ld6 = !git show --pretty='%n%C(cyan)╔════════════════════════════════════════════════════════════════════════════════%n║ %C(yellow)%h  %C(cyan)%>(12)%ad  %C(green)%<(16)%aN%n%C(cyan)║   %Creset%s%n' -6
+	ld7 = !git show --pretty='%n%C(cyan)╔════════════════════════════════════════════════════════════════════════════════%n║ %C(yellow)%h  %C(cyan)%>(12)%ad  %C(green)%<(16)%aN%n%C(cyan)║   %Creset%s%n' -7
+	ld8 = !git show --pretty='%n%C(cyan)╔════════════════════════════════════════════════════════════════════════════════%n║ %C(yellow)%h  %C(cyan)%>(12)%ad  %C(green)%<(16)%aN%n%C(cyan)║   %Creset%s%n' -8
+	ld9 = !git show --pretty='%n%C(cyan)╔════════════════════════════════════════════════════════════════════════════════%n║ %C(yellow)%h  %C(cyan)%>(12)%ad  %C(green)%<(16)%aN%n%C(cyan)║   %Creset%s%n' -9
 	alias = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\ \t => \\2/' | sort
+	sc = !~/bin/gitFlipSkipCI.sh
 
 [core]
 	editor = emacs
-	excludesfile = /Users/robertfa/.gitignore_global
+	excludesFile = ~/.gitignore
+	pager =
+
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
 	path = 
+
 [mergetool "sourcetree"]
 	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true

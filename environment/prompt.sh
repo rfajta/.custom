@@ -60,7 +60,8 @@ printPrompt() {
   #   [default]=""
   # )
   # COLOR_PROMPT_BG='$(getValue PROMPT_BG_COLORS ${USER})'
-  COLOR_PROMPT_BG="${BG_BLACK}"
+  COLOR_PROMPT_BG=""
+  # COLOR_PROMPT_BG="${BG_BLACK}"
 
   # the <user>
   COMMAND_USER='${USER}'
@@ -105,6 +106,8 @@ printPrompt() {
   # <exit code>
   COMMAND_EXITCODE='\ ${EXITCODE}\ '
   COLOR_EXITCODE='${BG_BLUE}${FG_YELLOW}'
+
+  COLOR_SEPARATOR_LINE="${FG_YELLOW}"
 
   # <git>
   COMMAND_GIT=\$\(/usr/local/bin/vcprompt\ -f\ \'[\${FG_GREEN}%a%m%u\ %b${FG_RED}\%a\%m\%u\${FG_YELLOW}]\'\)
@@ -154,10 +157,10 @@ printPrompt() {
   #  printf 'Elapsed time: %s\n' $(timer ${t})
   function timer() {
       if [[ $# -eq 0 ]]; then
-          echo $(/usr/local/bin/gdate '+%s%6N')
+          echo $(date '+%s%6N')
       else
           local  stime=$1
-          etime=$(/usr/local/bin/gdate '+%s%6N')
+          etime=$(date '+%s%6N')
 
           if [[ -z "${stime}" ]]; then stime=${etime}; fi
 
@@ -183,7 +186,7 @@ printPrompt() {
       echo -n " ${COLOR_GIT_BRACKETS}${COLOR_PROMPT_BG}${OPEN_SQ_BRAQCKET}${COLOR_GIT_BRANCH}${COLOR_PROMPT_BG}"
       if [[ "$branch" == "(no branch)" ]]
       then
-        branch=$(git log -1 --oneline --abbrev=5)
+        branch="$(git log -1 --oneline --abbrev=5)"
         branch="${branch:0:5}"
         echo -n "<${branch}>"
       else
@@ -193,7 +196,7 @@ printPrompt() {
 
       if [[ "${branch}" =~ 'HEAD detached at' ]]
       then
-        branchSha=$(git log -1 --oneline --abbrev=5)
+        branchSha="$(git log -1 --oneline --abbrev=5)"
         branchSha="${branchSha:0:5}"
       fi
 
@@ -212,12 +215,12 @@ printPrompt() {
       # untracked files
       if [[ -n $(git ls-files "${gitDir}" --other --exclude-standard) ]]
       then
-       changeIndicator="${changeIndicator}?"
+        changeIndicator="${changeIndicator}?"
       fi
-      # unpushed commits
-      if [[ -n $(git log ${branchSha} --not --remotes --oneline) ]]
+      # unpushed commits, no need for this during rebase
+      if [[ ( ! "${branchSha}" =~ "(no branch, rebasing " ) && -n $(git log "${branchSha}" --not --remotes --oneline) ]]
       then
-       changeIndicator="${changeIndicator}!"
+        changeIndicator="${changeIndicator}!"
       fi
       # stashed stack depth
       local stashStackDepth="$(git stash list | wc -l | cut -f8 -d' ' | grep -v '^ 0$')"
@@ -233,6 +236,11 @@ printPrompt() {
     else
       echo -n ""
     fi
+  }
+
+  composeHorizontalLine() {
+    printf -v str "%-${COLUMNS}s" ' '; echo -e "${str// /\\xE2\\x94\\x80}"
+    echo
   }
 
   composeBeginning() {
@@ -262,9 +270,12 @@ printPrompt() {
 
   # startTime=$(timer)
   echo -n "${COLOR_PROMPT_BG}"
+  local horizontalLine="${COLOR_SEPARATOR_LINE}$(composeHorizontalLine)"
   local beginnig="$(composeBeginning)"
   local end="$(composeEnd)"
 
+  # echo -n "${COLOR_SEPARATOR_LINE}"
+  echo -n "${horizontalLine}"
   echo -n "${beginnig}"
   composeIndentation "${beginnig}" "${end}"
   echo "${end}${NO_COLOR}"
