@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=YouTube
+GenericName=YouTube
+Comment=YouTube
+Icon=/home/robert/.local/share/applications/youtube.png
+Categories=AudioVideo;Audio;Player;GTK;
+Exec=/usr/bin/firefox --class=youtube -P App --no-remote
+# -url https://youtube.com/feed/history
+StartupNotify=true
+Terminal=false

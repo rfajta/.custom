@@ -44,11 +44,13 @@ safe_link() {
 	fi
 }
 
-setup_bin() {
+setup_dir() {
 	fromDir="$1"
+	toDir="$2"
+	[ -e "${toDir}" ] || mkdir -p "${toDir}"
 	for f in ${fromDir}
 	do
-		fileName="${HOME}/bin/$(basename "${f}")"
+		fileName="${toDir}/$(basename "${f}")"
 		safe_link "${f}" "${fileName}"
 	done
 }
@@ -57,10 +59,11 @@ main() {
 	checkParams "$@"
 	# trap 'cleanup "${SOME_PARAM}"' EXIT SIGINT SIGKILL SIGTERM SIGSTOP SIGABRT
 
-	mkdir "${HOME}/bin"
 	setup_profile
-	setup_bin "${HOME}/.custom/bin/*"
-	setup_bin "${HOME}/.custom/git/*"
+	setup_dir "${HOME}/.custom/bin/*" "${HOME}/bin"
+	setup_dir "${HOME}/.custom/git/*" "${HOME}/bin"
+	setup_dir "${HOME}/.custom/utils/*" "${HOME}/bin"
+	setup_dir "${HOME}/.custom/.local/share/applications/*" "${HOME}/.local/share/applications"
 
 	safe_link "${HOME}/.custom/git/.gitconfig" "${HOME}/.gitconfig"
 	safe_link "${HOME}/.custom/.emacs" "${HOME}/.emacs"

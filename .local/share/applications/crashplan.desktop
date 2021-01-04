@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Code42 CrashPlan
+Categories=Utility;
+Comment=Code42 CrashPlan Desktop
+Comment[en_CA]=Code42 CrashPlan Desktop
+Exec=/home/robert/crashplan/electron/crashplan
+Icon=/home/robert/crashplan/bin/icon_app.png
+Hidden=false
+Terminal=false
+Type=Application
+GenericName[en_CA]=
