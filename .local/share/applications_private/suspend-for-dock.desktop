@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Suspend Computer
+Exec=systemctl suspend
+Comment=Suspend icon for Ubuntu dock
+Terminal=false
+Type=Application
+Icon=/home/mu/.local/share/applications/sleep.png

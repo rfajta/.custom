@@ -65,6 +65,11 @@ main() {
 	setup_dir "${HOME}/.custom/utils/*" "${HOME}/bin"
 	setup_dir "${HOME}/.custom/.local/share/applications/*" "${HOME}/.local/share/applications"
 
+	# for private setup 
+	setup_dir "${HOME}/.custom/bin_private/*" "${HOME}/bin"
+	setup_dir "${HOME}/.custom/.local/share/applications_private/*" "${HOME}/.local/share/applications"
+
+
 	safe_link "${HOME}/.custom/git/.gitconfig" "${HOME}/.gitconfig"
 	safe_link "${HOME}/.custom/.emacs" "${HOME}/.emacs"
 

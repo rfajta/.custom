@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Play/Pause Music
+Exec=/home/mu/bin/startAudaciousIfNotRunning.sh previous
+Comment=Play/Pause Music
+Terminal=false
+Type=Application
+Icon=/home/mu/.local/share/applications/prev.png

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Flip Screen Brightness
+Exec=/home/mu/bin/flipDim.sh
+Comment=Flip Screen Brightness
+Terminal=false
+Type=Application
+Icon=/home/mu/.local/share/applications/lightBulb.png

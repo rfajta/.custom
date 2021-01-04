@@ -1,0 +1,13 @@
+[Desktop Entry]
+# VERSION=3.36.2
+Name=Midnight Commander
+Comment=Use the command line
+Keywords=shell;prompt;command;commandline;cmd;
+Exec=gnome-terminal --tab --class=mc -- mc
+Icon=MidnightCommander
+Type=Application
+Categories=GNOME;GTK;System;TerminalEmulator;
+X-GNOME-SingleWindow=false
+#OnlyShowIn=GNOME;Unity;
+#Actions=new-window;preferences;
+#X-Ubuntu-Gettext-Domain=gnome-terminal
