@@ -33,7 +33,7 @@ alias cds='cd ~/work/repos/DACH-NY/solution-spider'
 # alias make='echo "${FG_CYAN}${BG_LIGHT_GREY}    Started at: "$(date +%H:%M:%S)"    ${NO_COLOR}" ; /usr/bin/time -f "${FG_BLUE}${BG_LIGHT_GREY}    Execution time: %E    ${NO_COLOR}" make'
 alias da='/usr/bin/time -f "${FG_BLUE}${BG_LIGHT_GREY}    Execution time: %E    ${NO_COLOR}" da'
 # runs FT for the provided tags, e.g. runft @SPD-1234
-alias runft='make clean-logs-dir stop-application clean-app-nanobots run-ft ftracing=on fignore=@ignore ftags='
+# alias runft='make clean-logs-dir stop-application clean-app-nanobots run-ft ftracing=on fignore=@ignore ftags='
 # open all error egress xmls from a FT in an editor
 alias errs='for f in $(find logs/func-test/Functional/ -name *comm-808*.xml) ; do echo $f ; e $f ; done'
 # opens all ingress xmls from a FT in an editor 
@@ -45,6 +45,6 @@ alias ags='ag -G "\.scala$" "$@"'
 alias agf='ag -G "\.feature$" "$@"'
 alias agx='ag -G "\.xml$" "$@"'
 alias damltest='echo "${FG_CYAN}${BG_LIGHT_GREY}    Started at: "$(date +%H:%M:%S)"    ${NO_COLOR}" ; /usr/bin/time -f "${FG_BLUE}${BG_LIGHT_GREY}    Execution time: %E    ${NO_COLOR}" daml damlc test --project-root /home/robert/work/repos/DACH-NY/solution-spider --files app/daml-model/src/DA/ASX/Test/BizProcess/Transfer/ParticipantToIssuer/Service.daml'
-alias lmsimple='f *.xml | cut -f2 -d: | sort -t/ -k3'
+alias lmsimple='(f *.xml ; f *.fix) | cut -f2 -d: | sort -t/ -k3'
 # alias lm='f *.xml | cut -f2 -d: | sort -t/ -k3 | cat -b | sed -e "s/\(^ *[0-9]*\)\(.*\)/\1\2\1/" | grep "^ *[0-9]*\|[0-9]*$\|[a-z]\+-[0-9]*"'
 alias mouse='sudo modprobe -r psmouse && sudo modprobe psmouse'

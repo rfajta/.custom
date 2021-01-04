@@ -1,0 +1,21 @@
+#!/bin/bash -eup
+
+. ~/.custom/environment/commands.sh
+
+tags="$1"
+
+files="$(ag -G "\.feature$" -l "$tags[[:space:]]" | sed -e "s/func-test\///")"
+
+if [[ "$files" == "" ]]; then
+  echo "  ${FG_RED}Tag was not found in any of the feture files. Exiting.${NO_COLOR}"
+  exit 0
+fi
+
+echo -e "  ${FG_GREEN}Feature file(s):${NO_COLOR} \n$files"
+if (( $(grep -c . <<<"$files") > 1 )); then
+  echo "  ${FG_GREEN}Runing for multiple feature files...${NO_COLOR}"
+  make clean-logs-dir stop-application run-ft-jar ftags=$tags ftracing=on fignore=@ignore
+else
+  echo "  ${FG_GREEN}Runing for single feature file...${NO_COLOR}"
+  make clean-logs-dir stop-application run-ft-jar ftags=$tags ftracing=on fignore=@ignore ffile="$files"
+fi

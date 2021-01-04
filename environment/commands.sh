@@ -146,6 +146,7 @@ t() {
   fi 
 }
 
+# find files and dirs matching with name
 f() {
   if [[ $# == 0 ]]
   then
@@ -155,6 +156,17 @@ f() {
   fi
 }
 
+# open in an editor the files and dirs matching with name
+fe() {
+  if [[ $# == 0 ]]
+  then
+    find . -exec ls -lA {} \; 2>/dev/null
+  else
+    find . -name "$@" -exec subl {} \; 2>/dev/null
+  fi
+}
+
+# list files and dirs matching with name
 fl() {
   if [[ $# == 0 ]]
   then
@@ -164,6 +176,7 @@ fl() {
   fi
 }
 
+# find files but not dirs matching with name
 ff() {
     if [[ $# == 0 ]]
   then
@@ -173,6 +186,7 @@ ff() {
   fi
 }
 
+# list files but not dirs matching with name
 ffl() {
     if [[ $# == 0 ]]
   then
@@ -286,8 +300,10 @@ function make() {
   makeCommand="$(which make)"
   t=$(timer)
   echo "${FG_CYAN}${BG_LIGHT_GREY}    Started at: "$(date +%H:%M:%S)"    ${NO_COLOR}" ; /usr/bin/time -o /dev/stdout -f "${FG_BLUE}${BG_LIGHT_GREY}    Execution time: %E    ${NO_COLOR}" "${makeCommand}" "$@"
+  makeErrorCode=$?
   ellapseSeconds=$(timer ${t} | cut -f1 -d.)
   echo "$(date +%Y-%m-%d),${ellapseSeconds},make $@" >> ~/damlBuildAndRunTime.txt
+  return $makeErrorCode
   # (paplay /usr/share/sounds/ubuntu/stereo/service-logout.ogg && paplay /usr/share/sounds/ubuntu/stereo/service-login.ogg) &
 }
 
@@ -364,4 +380,12 @@ function lm() {
   then
     cd - 2>&1 >/dev/null
   fi
+}
+
+function worldclock () { 
+  TZONES='America/New_York Europe/London Europe/Budapest Asia/Hong_Kong Australia/Sydney GMT UTC';
+  for TZONE in ${TZONES[@]};
+  do
+    echo "$(echo ${TZONE} | cut -d'/' -f2 | sed 's/_/ /g') | $(TZ=$TZONE date +"%H:%M   %d/%m/%Y (%z %Z)")";
+  done | column -t -s'|'
 }
