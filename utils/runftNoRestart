@@ -4,7 +4,7 @@
 
 tags="$1"
 
-files="$(ag -G "\.feature$" -l "$tags[[:space:]]" | sed -e "s/func-test\///")"
+files="$(ag -G "\.feature$" -l "$tags[[:space:]]" | sed -e "s/func-test\///" | LC_ALL=C sed -e 's/[^a-zA-Z0-9,._+@%/-]/\\&/g; 1{$s/^$/""/}; 1!s/^/"/; $!s/$/"/')"
 
 if [[ "$files" == "" ]]; then
   echo "  ${FG_RED}Tag was not found in any of the feture files. Exiting.${NO_COLOR}"
