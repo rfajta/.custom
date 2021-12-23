@@ -30,6 +30,7 @@ alias o='xdg-open'
 alias psql_start='sudo -u postgres psql -P pager=off postgres'
 alias cdr='cd ~/work/repos/DACH-NY/_ref_apps/'
 alias cds='cd ~/work/repos/DACH-NY/solution-spider'
+alias cds2='cd ~/work/repos/DACH-NY/solution-spider-2'
 # alias make='echo "${FG_CYAN}${BG_LIGHT_GREY}    Started at: "$(date +%H:%M:%S)"    ${NO_COLOR}" ; /usr/bin/time -f "${FG_BLUE}${BG_LIGHT_GREY}    Execution time: %E    ${NO_COLOR}" make'
 alias da='/usr/bin/time -f "${FG_BLUE}${BG_LIGHT_GREY}    Execution time: %E    ${NO_COLOR}" da'
 # runs FT for the provided tags, e.g. runft @SPD-1234

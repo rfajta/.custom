@@ -3,8 +3,10 @@
 . ~/.custom/environment/commands.sh
 
 tags="$1"
+shift
 
-files="$(ag -G "\.feature$" -l "$tags[[:space:]]" | sed -e "s/func-test\///" | LC_ALL=C sed -e 's/[^a-zA-Z0-9,._+@%/-]/\\&/g; 1{$s/^$/""/}; 1!s/^/"/; $!s/$/"/')"
+# files="$(ag -G "\.feature$" -l "$tags[[:space:]]" | sed -e "s/func-test\///" | LC_ALL=C sed -e 's/[^a-zA-Z0-9,._+@%/-]/\\&/g; 1{$s/^$/""/}; 1!s/^/"/; $!s/$/"/')"
+files="$(ag -G "\.feature$" -l "$tags[[:space:]]" | sed -e "s/func-test\///")"
 
 if [[ "$files" == "" ]]; then
   echo "  ${FG_RED}Tag was not found in any of the feture files. Exiting.${NO_COLOR}"
@@ -14,9 +16,11 @@ fi
 echo -e "  ${FG_GREEN}Feature file(s):${NO_COLOR} \n$files"
 if (( $(grep -c . <<<"$files") > 1 )); then
   echo "  ${FG_GREEN}Runing for multiple feature files...${NO_COLOR}"
-  make clean-logs-dir run-ft-jar ftags=$tags ftracing=on fignore=@ignore
+  make clean-logs-dir run-ft-no-restart ftags=$tags ftracing=on fignore=@ignore "$@"
+  #fverbose=on
 else
   echo "  ${FG_GREEN}Runing for single feature file...${NO_COLOR}"
-  echo "make clean-logs-dir run-ft-jar ftags=$tags ftracing=on fignore=@ignore ffile=\"$files\""
-  make clean-logs-dir run-ft-jar ftags=$tags ftracing=on fignore=@ignore ffile="$files"
+  echo "make clean-logs-dir run-ft ftags=$tags ftracing=on fignore=@ignore ffile=\"$files\" \"$@\""
+  make clean-logs-dir run-ft ftags=$tags ftracing=on fignore=@ignore ffile="$files" "$@"
+  #fverbose=on
 fi

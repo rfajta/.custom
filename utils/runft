@@ -3,6 +3,7 @@
 . ~/.custom/environment/commands.sh
 
 tags="$1"
+shift
 
 files="$(ag -G "\.feature$" -l "$tags[[:space:]]" | sed -e "s/func-test\///" | LC_ALL=C sed -e 's/[^a-zA-Z0-9,._+@%/-]/\\&/g; 1{$s/^$/""/}; 1!s/^/"/; $!s/$/"/')"
 
@@ -14,8 +15,31 @@ fi
 echo -e "  ${FG_GREEN}Feature file(s):${NO_COLOR} \n$files"
 if (( $(grep -c . <<<"$files") > 1 )); then
   echo "  ${FG_GREEN}Runing for multiple feature files...${NO_COLOR}"
-  make clean-logs-dir stop-application run-ft-jar ftags=$tags ftracing=on fignore=@ignore
+  echo "  make clean-logs-dir run-ft args=\"-t $tags\" ftracing=on fignore=@ignore \"$@\""
+  export BRIDGE_DONT_CLEANUP_SCHEMA=true
+  if [[ "$PWD" == "/home/robert/work/repos/DACH-NY/solution-spider" ]] ; then rm -f spider-bots.log ; fi
+  make clean-logs-dir run-ft utags="$tags" ftracing=on fcapture=on fignore=@ignore "$@"
 else
   echo "  ${FG_GREEN}Runing for single feature file...${NO_COLOR}"
-  make clean-logs-dir stop-application run-ft-jar ftags=$tags ftracing=on fignore=@ignore ffile="$files"
+  echo "  make clean-logs-dir run-ft args=\"-t $tags\" ftracing=on fignore=@ignore \"$@\""
+  export BRIDGE_DONT_CLEANUP_SCHEMA=true
+  if [[ "$PWD" == "/home/robert/work/repos/DACH-NY/solution-spider" ]] ; then rm -f spider-bots.log ; fi
+  make clean-logs-dir run-ft utags="$tags" ftracing=on fcapture=on fignore=@ignore "$@"
 fi
+
+# if [[ -f /home/robert/work/repos/DACH-NY/solution-spider/spider-bots.log ]] ; then subl /home/robert/work/repos/DACH-NY/solution-spider/spider-bots.log ; fi
+
+
+
+# echo -e "  ${FG_GREEN}Feature file(s):${NO_COLOR} \n$files"
+# if (( $(grep -c . <<<"$files") > 1 )); then
+#   echo "  ${FG_GREEN}Runing for multiple feature files...${NO_COLOR}"
+#   echo "  make clean-logs-dir stop-application run-ft ftags=$tags ftracing=on fignore=@ignore \"$@\""
+#   make clean-logs-dir stop-application run-ft ftags=$tags ftracing=on fignore=@ignore "$@"
+#   #fverbose=on
+# else
+#   echo "  ${FG_GREEN}Runing for single feature file...${NO_COLOR}"
+#   echo "  make clean-logs-dir stop-application run-ft ftags=$tags ftracing=on fignore=@ignore ffile=\"$files\" \"$@\""
+#   make clean-logs-dir stop-application run-ft ftags=$tags ftracing=on fignore=@ignore ffile="$files" "$@"
+#   #fverbose=on
+# fi
